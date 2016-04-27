@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"os"
 )
@@ -18,6 +17,11 @@ type Event struct {
 	GroupType string `json:"groupType"`
 	GroupName string `json:"groupName"`
 	ChaosType string `json:"chaosType,omitempty"`
+}
+
+type Result struct {
+	*Event
+	Message string `json:"message"`
 }
 
 func main() {
@@ -59,13 +63,18 @@ func main() {
 	}
 	defer resp.Body.Close()
 
-	r, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
+	fmt.Println(resp.StatusCode)
+
+	var res Result
+	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
 		abort("%s", err)
 	}
 
-	fmt.Println(resp.StatusCode)
-	fmt.Println(string(r))
+	fmt.Printf("%+v\n", res)
+
+	if res.Message != "" {
+		abort(res.Message)
+	}
 }
 
 func abort(format string, a ...interface{}) {
