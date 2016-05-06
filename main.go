@@ -33,9 +33,13 @@ func main() {
 		Username: username,
 		Password: password,
 	}
-	client, _ := chaosmonkey.NewClient(&config)
-	err := client.TriggerEvent(groupName, chaosType)
+
+	client, err := chaosmonkey.NewClient(&config)
 	if err != nil {
+		abort("%s", err)
+	}
+
+	if err := client.TriggerEvent(groupName, chaosType); err != nil {
 		abort("%s", err)
 	}
 }
