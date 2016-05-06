@@ -9,22 +9,20 @@ import (
 	"time"
 )
 
-type Event struct {
+type EventRequest struct {
 	EventType string `json:"eventType"`
 	GroupType string `json:"groupType"`
 	GroupName string `json:"groupName"`
 	ChaosType string `json:"chaosType,omitempty"`
 }
 
-type Result struct {
-	Event
+type EventResponse struct {
+	EventRequest
 
 	MonkeyType string `json:"monkeyType"`
 	EventID    string `json:"eventId"`
 	EventTime  int64  `json:"eventTime"`
 	Region     string `json:"region"`
-
-	Message string `json:"message"`
 }
 
 type Config struct {
@@ -52,61 +50,59 @@ func NewClient(c *Config) (*Client, error) {
 	return &Client{config: c}, nil
 }
 
-func (c *Client) TriggerChaosEvent(groupName, chaosType string) error {
-	e := Event{
+func (c *Client) TriggerEvent(groupName, chaosType string) error {
+	e := EventRequest{
 		EventType: "CHAOS_TERMINATION",
 		GroupType: "ASG",
 		GroupName: groupName,
 		ChaosType: chaosType,
 	}
-
-	data, err := json.Marshal(&e)
+	payload, err := json.Marshal(&e)
 	if err != nil {
 		return err
 	}
 
 	url := c.config.Endpoint + "/simianarmy/api/v1/chaos"
-	resp, err := c.SendRequest("POST", url, bytes.NewReader(data))
+	resp, err := c.sendRequest("POST", url, bytes.NewReader(payload))
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		fmt.Println(resp.StatusCode)
+		return decodeError(resp)
 	}
 
-	var res Result
+	var res EventResponse
 	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
 		return err
-	}
-
-	fmt.Printf("%+v\n", res)
-
-	if res.Message != "" {
-		return fmt.Errorf("%s", res.Message)
 	}
 
 	return nil
 }
 
-func (c *Client) NewRequest(method, url string, body io.Reader) (*http.Request, error) {
+func (c *Client) sendRequest(method, url string, body io.Reader) (*http.Response, error) {
 	req, err := http.NewRequest(method, url, body)
 	if err != nil {
 		return nil, err
 	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Add("User-Agent", "havoc")
+
 	if c.config.Username != "" && c.config.Password != "" {
 		req.SetBasicAuth(c.config.Username, c.config.Password)
 	}
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Add("User-Agent", "havoc")
-	return req, nil
+
+	return c.config.HTTPClient.Do(req)
 }
 
-func (c *Client) SendRequest(method, url string, body io.Reader) (*http.Response, error) {
-	req, err := c.NewRequest(method, url, body)
-	if err != nil {
-		return nil, err
+func decodeError(resp *http.Response) error {
+	var m struct {
+		Message string `json:"message"`
 	}
-	return c.config.HTTPClient.Do(req)
+	if err := json.NewDecoder(resp.Body).Decode(&m); err == nil && m.Message != "" {
+		return fmt.Errorf("%s", m.Message)
+	}
+	return fmt.Errorf("%s", resp.Status)
 }

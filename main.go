@@ -28,7 +28,7 @@ func main() {
 		Endpoint: endpoint,
 	}
 	client, _ := chaosmonkey.NewClient(&config)
-	err := client.TriggerChaosEvent(groupName, chaosType)
+	err := client.TriggerEvent(groupName, chaosType)
 	if err != nil {
 		abort("%s", err)
 	}
