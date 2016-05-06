@@ -149,6 +149,6 @@ func makeChaosEvent(in *chaosResponse) *ChaosEvent {
 		ASGName:    in.GroupName,
 		InstanceID: in.EventID,
 		Region:     in.Region,
-		Time:       time.Unix(in.EventTime/1000, 0),
+		Time:       time.Unix(in.EventTime/1000, 0).UTC(),
 	}
 }
