@@ -51,15 +51,13 @@ func (c *Config) ReadEnvironment() error {
 
 func NewClient(c *Config) (*Client, error) {
 	if c.HTTPClient == nil {
-		c.HTTPClient = &http.Client{
-			Timeout: 15 * time.Second,
-		}
+		c.HTTPClient = http.DefaultClient
 	}
 	return &Client{config: c}, nil
 }
 
 func (c *Client) TriggerEvent(asgName, strategy string) (*ChaosEvent, error) {
-	payload, err := json.Marshal(chaosRequest{
+	body, err := json.Marshal(chaosRequest{
 		EventType: "CHAOS_TERMINATION",
 		GroupType: "ASG",
 		GroupName: asgName,
@@ -72,7 +70,7 @@ func (c *Client) TriggerEvent(asgName, strategy string) (*ChaosEvent, error) {
 	url := c.config.Endpoint + "/simianarmy/api/v1/chaos"
 
 	var event chaosResponse
-	if err := c.sendRequest("POST", url, bytes.NewReader(payload), &event); err != nil {
+	if err := c.sendRequest("POST", url, bytes.NewReader(body), &event); err != nil {
 		return nil, err
 	}
 

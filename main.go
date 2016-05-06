@@ -3,7 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net/http"
 	"os"
+	"time"
 
 	"github.com/mlafeldt/havoc/chaosmonkey"
 )
@@ -25,9 +27,10 @@ func main() {
 	flag.Parse()
 
 	config := chaosmonkey.Config{
-		Endpoint: endpoint,
-		Username: username,
-		Password: password,
+		Endpoint:   endpoint,
+		Username:   username,
+		Password:   password,
+		HTTPClient: &http.Client{Timeout: 10 * time.Second},
 	}
 
 	client, err := chaosmonkey.NewClient(&config)
