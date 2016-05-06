@@ -10,13 +10,11 @@ import (
 
 func main() {
 	var (
-		region    string
 		groupName string
 		chaosType string
 		endpoint  string
 	)
 
-	flag.StringVar(&region, "region", "", "AWS region")
 	flag.StringVar(&groupName, "group-name", "", "Group name")
 	flag.StringVar(&chaosType, "chaos-type", "ShutdownInstance", "Chaos type")
 	flag.StringVar(&endpoint, "endpoint", "http://127.0.0.1:8080", "Endpoint")
@@ -30,7 +28,7 @@ func main() {
 		Endpoint: endpoint,
 	}
 	client, _ := chaosmonkey.NewClient(&config)
-	err := client.TriggerChaosEvent(groupName, chaosType, region)
+	err := client.TriggerChaosEvent(groupName, chaosType)
 	if err != nil {
 		abort("%s", err)
 	}

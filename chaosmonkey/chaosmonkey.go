@@ -10,17 +10,20 @@ import (
 )
 
 type Event struct {
-	MonkeyType string `json:"monkeyType,omitempty"`
-	EventType  string `json:"eventType"`
-	// EventTime  time.Date `json:"eventTime,omitempty"`
-	Region    string `json:"region,omitempty"`
+	EventType string `json:"eventType"`
 	GroupType string `json:"groupType"`
 	GroupName string `json:"groupName"`
 	ChaosType string `json:"chaosType,omitempty"`
 }
 
 type Result struct {
-	*Event
+	Event
+
+	MonkeyType string `json:"monkeyType"`
+	EventID    string `json:"eventId"`
+	EventTime  int64  `json:"eventTime"`
+	Region     string `json:"region"`
+
 	Message string `json:"message"`
 }
 
@@ -49,14 +52,12 @@ func NewClient(c *Config) (*Client, error) {
 	return &Client{config: c}, nil
 }
 
-func (c *Client) TriggerChaosEvent(groupName, chaosType, region string) error {
+func (c *Client) TriggerChaosEvent(groupName, chaosType string) error {
 	e := Event{
-		MonkeyType: "CHAOS",
-		EventType:  "CHAOS_TERMINATION",
-		Region:     region,
-		GroupType:  "ASG",
-		GroupName:  groupName,
-		ChaosType:  chaosType,
+		EventType: "CHAOS_TERMINATION",
+		GroupType: "ASG",
+		GroupName: groupName,
+		ChaosType: chaosType,
 	}
 
 	data, err := json.Marshal(&e)
