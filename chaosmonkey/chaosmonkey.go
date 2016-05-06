@@ -9,6 +9,32 @@ import (
 	"time"
 )
 
+const (
+	StrategyShutdownInstance       = "ShutdownInstance"
+	StrategyBlockAllNetworkTraffic = "BlockAllNetworkTraffic"
+	StrategyDetachVolumes          = "DetachVolumes"
+	StrategyBurnCPU                = "BurnCpu"
+	StrategyBurnIO                 = "BurnIo"
+	StrategyKillProcesses          = "KillProcesses"
+	StrategyNullRoute              = "NullRoute"
+	StrategyFailEC2                = "FailEc2"
+	StrategyFailDNS                = "FailDns"
+	StrategyFailDynamoDB           = "FailDynamoDb"
+	StrategyFailS3                 = "FailS3"
+	StrategyFillDisk               = "FillDisk"
+	StrategyNetworkCorruption      = "NetworkCorruption"
+	StrategyNetworkLatency         = "NetworkLatency"
+	StrategyNetworkLoss            = "NetworkLoss"
+)
+
+type ChaosEvent struct {
+	Strategy   string
+	ASGName    string
+	InstanceID string
+	Region     string
+	Time       time.Time
+}
+
 type chaosRequest struct {
 	EventType string `json:"eventType"`
 	GroupType string `json:"groupType"`
@@ -23,14 +49,6 @@ type chaosResponse struct {
 	EventID    string `json:"eventId"`
 	EventTime  int64  `json:"eventTime"`
 	Region     string `json:"region"`
-}
-
-type ChaosEvent struct {
-	Strategy   string
-	ASGName    string
-	InstanceID string
-	Region     string
-	Time       time.Time
 }
 
 type Config struct {
