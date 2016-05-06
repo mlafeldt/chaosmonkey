@@ -50,6 +50,9 @@ func (c *Config) ReadEnvironment() error {
 }
 
 func NewClient(c *Config) (*Client, error) {
+	if c.Endpoint == "" {
+		return nil, fmt.Errorf("Endpoint must not be empty")
+	}
 	if c.HTTPClient == nil {
 		c.HTTPClient = http.DefaultClient
 	}
