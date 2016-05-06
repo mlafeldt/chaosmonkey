@@ -24,10 +24,6 @@ func main() {
 	flag.StringVar(&password, "password", "", "HTTP password")
 	flag.Parse()
 
-	if groupName == "" {
-		abort("group name missing")
-	}
-
 	config := chaosmonkey.Config{
 		Endpoint: endpoint,
 		Username: username,
@@ -39,8 +35,18 @@ func main() {
 		abort("%s", err)
 	}
 
-	if err := client.TriggerEvent(groupName, chaosType); err != nil {
-		abort("%s", err)
+	if groupName != "" {
+		if err := client.TriggerEvent(groupName, chaosType); err != nil {
+			abort("%s", err)
+		}
+	} else {
+		events, err := client.GetEvents()
+		if err != nil {
+			abort("%s", err)
+		}
+		for _, e := range events {
+			fmt.Printf("%+v\n", e)
+		}
 	}
 }
 

@@ -16,8 +16,8 @@ type EventRequest struct {
 	ChaosType string `json:"chaosType,omitempty"`
 }
 
-type EventResponse struct {
-	EventRequest
+type Event struct {
+	*EventRequest
 
 	MonkeyType string `json:"monkeyType"`
 	EventID    string `json:"eventId"`
@@ -73,12 +73,32 @@ func (c *Client) TriggerEvent(groupName, chaosType string) error {
 		return decodeError(resp)
 	}
 
-	var res EventResponse
+	var res Event
 	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func (c *Client) GetEvents() ([]Event, error) {
+	url := c.config.Endpoint + "/simianarmy/api/v1/chaos"
+	resp, err := c.sendRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, decodeError(resp)
+	}
+
+	var events []Event
+	if err := json.NewDecoder(resp.Body).Decode(&events); err != nil {
+		return nil, err
+	}
+
+	return events, nil
 }
 
 func (c *Client) sendRequest(method, url string, body io.Reader) (*http.Response, error) {
