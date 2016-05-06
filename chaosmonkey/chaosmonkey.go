@@ -63,10 +63,6 @@ type Client struct {
 	config *Config
 }
 
-func (c *Config) ReadEnvironment() error {
-	return nil
-}
-
 func NewClient(c *Config) (*Client, error) {
 	if c.Endpoint == "" {
 		return nil, fmt.Errorf("Endpoint must not be empty")
