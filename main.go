@@ -10,15 +10,15 @@ import (
 
 func main() {
 	var (
-		groupName string
-		chaosType string
-		endpoint  string
-		username  string
-		password  string
+		asgName  string
+		strategy string
+		endpoint string
+		username string
+		password string
 	)
 
-	flag.StringVar(&groupName, "group-name", "", "Group name")
-	flag.StringVar(&chaosType, "chaos-type", "ShutdownInstance", "Chaos type")
+	flag.StringVar(&asgName, "asg", "", "Name of auto scaling group")
+	flag.StringVar(&strategy, "strategy", "", "Chaos strategy to use")
 	flag.StringVar(&endpoint, "endpoint", "http://127.0.0.1:8080", "HTTP endpoint")
 	flag.StringVar(&username, "username", "", "HTTP username")
 	flag.StringVar(&password, "password", "", "HTTP password")
@@ -35,8 +35,8 @@ func main() {
 		abort("%s", err)
 	}
 
-	if groupName != "" {
-		event, err := client.TriggerEvent(groupName, chaosType)
+	if asgName != "" {
+		event, err := client.TriggerEvent(asgName, strategy)
 		if err != nil {
 			abort("%s", err)
 		}
