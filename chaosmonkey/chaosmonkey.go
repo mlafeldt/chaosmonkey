@@ -26,9 +26,9 @@ type EventResponse struct {
 }
 
 type Config struct {
+	Endpoint string
 	Username string
 	Password string
-	Endpoint string
 
 	HTTPClient *http.Client
 }

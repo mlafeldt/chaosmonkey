@@ -13,11 +13,15 @@ func main() {
 		groupName string
 		chaosType string
 		endpoint  string
+		username  string
+		password  string
 	)
 
 	flag.StringVar(&groupName, "group-name", "", "Group name")
 	flag.StringVar(&chaosType, "chaos-type", "ShutdownInstance", "Chaos type")
-	flag.StringVar(&endpoint, "endpoint", "http://127.0.0.1:8080", "Endpoint")
+	flag.StringVar(&endpoint, "endpoint", "http://127.0.0.1:8080", "HTTP endpoint")
+	flag.StringVar(&username, "username", "", "HTTP username")
+	flag.StringVar(&password, "password", "", "HTTP password")
 	flag.Parse()
 
 	if groupName == "" {
@@ -26,6 +30,8 @@ func main() {
 
 	config := chaosmonkey.Config{
 		Endpoint: endpoint,
+		Username: username,
+		Password: password,
 	}
 	client, _ := chaosmonkey.NewClient(&config)
 	err := client.TriggerEvent(groupName, chaosType)
