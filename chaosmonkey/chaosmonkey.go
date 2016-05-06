@@ -106,14 +106,9 @@ func (c *Client) sendRequest(method, url string, body io.Reader) (*http.Response
 	if err != nil {
 		return nil, err
 	}
-
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Add("User-Agent", "havoc")
-
 	if c.config.Username != "" && c.config.Password != "" {
 		req.SetBasicAuth(c.config.Username, c.config.Password)
 	}
-
 	return c.config.HTTPClient.Do(req)
 }
 
