@@ -60,6 +60,8 @@ func NewClient(c *Config) (*Client, error) {
 }
 
 func (c *Client) TriggerEvent(asgName, strategy string) (*ChaosEvent, error) {
+	url := c.config.Endpoint + "/simianarmy/api/v1/chaos"
+
 	body, err := json.Marshal(chaosRequest{
 		EventType: "CHAOS_TERMINATION",
 		GroupType: "ASG",
@@ -70,43 +72,28 @@ func (c *Client) TriggerEvent(asgName, strategy string) (*ChaosEvent, error) {
 		return nil, err
 	}
 
-	url := c.config.Endpoint + "/simianarmy/api/v1/chaos"
-
-	var event chaosResponse
-	if err := c.sendRequest("POST", url, bytes.NewReader(body), &event); err != nil {
+	var resp chaosResponse
+	if err := c.sendRequest("POST", url, bytes.NewReader(body), &resp); err != nil {
 		return nil, err
 	}
 
-	return &ChaosEvent{
-		Strategy:   event.ChaosType,
-		ASGName:    event.GroupName,
-		InstanceID: event.EventID,
-		Region:     event.Region,
-		Time:       time.Unix(event.EventTime/1000, 0),
-	}, nil
+	return makeChaosEvent(&resp), nil
 }
 
 func (c *Client) GetEvents() ([]ChaosEvent, error) {
 	url := c.config.Endpoint + "/simianarmy/api/v1/chaos"
 
-	var events []chaosResponse
-	if err := c.sendRequest("GET", url, nil, &events); err != nil {
+	var resp []chaosResponse
+	if err := c.sendRequest("GET", url, nil, &resp); err != nil {
 		return nil, err
 	}
 
-	var chaosEvents []ChaosEvent
-	for _, event := range events {
-		e := ChaosEvent{
-			Strategy:   event.ChaosType,
-			ASGName:    event.GroupName,
-			InstanceID: event.EventID,
-			Region:     event.Region,
-			Time:       time.Unix(event.EventTime/1000, 0),
-		}
-		chaosEvents = append(chaosEvents, e)
+	var events []ChaosEvent
+	for _, r := range resp {
+		events = append(events, *makeChaosEvent(&r))
 	}
 
-	return chaosEvents, nil
+	return events, nil
 }
 
 func (c *Client) sendRequest(method, url string, body io.Reader, out interface{}) error {
@@ -140,4 +127,14 @@ func decodeError(resp *http.Response) error {
 		return fmt.Errorf("%s", m.Message)
 	}
 	return fmt.Errorf("%s", resp.Status)
+}
+
+func makeChaosEvent(in *chaosResponse) *ChaosEvent {
+	return &ChaosEvent{
+		Strategy:   in.ChaosType,
+		ASGName:    in.GroupName,
+		InstanceID: in.EventID,
+		Region:     in.Region,
+		Time:       time.Unix(in.EventTime/1000, 0),
+	}
 }
