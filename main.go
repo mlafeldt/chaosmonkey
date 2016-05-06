@@ -36,9 +36,11 @@ func main() {
 	}
 
 	if groupName != "" {
-		if err := client.TriggerEvent(groupName, chaosType); err != nil {
+		event, err := client.TriggerEvent(groupName, chaosType)
+		if err != nil {
 			abort("%s", err)
 		}
+		fmt.Printf("%+v\n", event)
 	} else {
 		events, err := client.GetEvents()
 		if err != nil {
