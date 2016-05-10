@@ -1,3 +1,5 @@
+// Package chaosmonkey allows to talk to the Chaos Monkey REST API to trigger
+// and retrieve chaos events.
 package chaosmonkey
 
 import (
@@ -10,29 +12,68 @@ import (
 )
 
 const (
-	StrategyShutdownInstance       = "ShutdownInstance"
+	// StrategyShutdownInstance ...
+	StrategyShutdownInstance = "ShutdownInstance"
+
+	// StrategyBlockAllNetworkTraffic ...
 	StrategyBlockAllNetworkTraffic = "BlockAllNetworkTraffic"
-	StrategyDetachVolumes          = "DetachVolumes"
-	StrategyBurnCPU                = "BurnCpu"
-	StrategyBurnIO                 = "BurnIo"
-	StrategyKillProcesses          = "KillProcesses"
-	StrategyNullRoute              = "NullRoute"
-	StrategyFailEC2                = "FailEc2"
-	StrategyFailDNS                = "FailDns"
-	StrategyFailDynamoDB           = "FailDynamoDb"
-	StrategyFailS3                 = "FailS3"
-	StrategyFillDisk               = "FillDisk"
-	StrategyNetworkCorruption      = "NetworkCorruption"
-	StrategyNetworkLatency         = "NetworkLatency"
-	StrategyNetworkLoss            = "NetworkLoss"
+
+	// StrategyDetachVolumes ...
+	StrategyDetachVolumes = "DetachVolumes"
+
+	// StrategyBurnCPU ...
+	StrategyBurnCPU = "BurnCpu"
+
+	// StrategyBurnIO ...
+	StrategyBurnIO = "BurnIo"
+
+	// StrategyKillProcesses ...
+	StrategyKillProcesses = "KillProcesses"
+
+	// StrategyNullRoute ...
+	StrategyNullRoute = "NullRoute"
+
+	// StrategyFailEC2 ...
+	StrategyFailEC2 = "FailEc2"
+
+	// StrategyFailDNS ...
+	StrategyFailDNS = "FailDns"
+
+	// StrategyFailDynamoDB ...
+	StrategyFailDynamoDB = "FailDynamoDb"
+
+	// StrategyFailS3 ...
+	StrategyFailS3 = "FailS3"
+
+	// StrategyFillDisk ...
+	StrategyFillDisk = "FillDisk"
+
+	// StrategyNetworkCorruption ...
+	StrategyNetworkCorruption = "NetworkCorruption"
+
+	// StrategyNetworkLatency ...
+	StrategyNetworkLatency = "NetworkLatency"
+
+	// StrategyNetworkLoss ...
+	StrategyNetworkLoss = "NetworkLoss"
 )
 
+// ChaosEvent describes when and how Chaos Monkey terminated an EC2 instance.
 type ChaosEvent struct {
-	Strategy   string
-	ASGName    string
+	// Name of chaos strategy that was used, e.g. "ShutdownInstance"
+	Strategy string
+
+	// Name of auto scaling group containing the terminated EC2 instance
+	ASGName string
+
+	// ID of EC2 instance that was terminated
 	InstanceID string
-	Region     string
-	Time       time.Time
+
+	// AWS region of EC2 instance and its auto scaling group
+	Region string
+
+	// Time of the chaos event
+	Time time.Time
 }
 
 type apiRequest struct {
@@ -51,18 +92,27 @@ type apiResponse struct {
 	Region     string `json:"region"`
 }
 
+// Config is used to configure the creation of the client.
 type Config struct {
+	// Address of the Chaos Monkey API server
 	Endpoint string
+
+	// Optional username for HTTP Basic Authentication
 	Username string
+
+	// Optional password for HTTP Basic Authentication
 	Password string
 
+	// Custom HTTP client to use (http.DefaultClient by default)
 	HTTPClient *http.Client
 }
 
+// Client is the client to the Chaos Monkey API. Create a client with NewClient.
 type Client struct {
 	config *Config
 }
 
+// NewClient returns a new client for the given configuration.
 func NewClient(c *Config) (*Client, error) {
 	if c.Endpoint == "" {
 		return nil, fmt.Errorf("Endpoint must not be empty")
@@ -73,6 +123,7 @@ func NewClient(c *Config) (*Client, error) {
 	return &Client{config: c}, nil
 }
 
+// TriggerEvent triggers a new chaos event.
 func (c *Client) TriggerEvent(asgName, strategy string) (*ChaosEvent, error) {
 	url := c.config.Endpoint + "/simianarmy/api/v1/chaos"
 
@@ -94,6 +145,7 @@ func (c *Client) TriggerEvent(asgName, strategy string) (*ChaosEvent, error) {
 	return makeChaosEvent(&resp), nil
 }
 
+// GetEvents returns a list of past chaos events.
 func (c *Client) GetEvents() ([]ChaosEvent, error) {
 	url := c.config.Endpoint + "/simianarmy/api/v1/chaos"
 
