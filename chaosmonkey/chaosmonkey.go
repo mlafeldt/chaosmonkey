@@ -11,53 +11,6 @@ import (
 	"time"
 )
 
-const (
-	// StrategyShutdownInstance ...
-	StrategyShutdownInstance = "ShutdownInstance"
-
-	// StrategyBlockAllNetworkTraffic ...
-	StrategyBlockAllNetworkTraffic = "BlockAllNetworkTraffic"
-
-	// StrategyDetachVolumes ...
-	StrategyDetachVolumes = "DetachVolumes"
-
-	// StrategyBurnCPU ...
-	StrategyBurnCPU = "BurnCpu"
-
-	// StrategyBurnIO ...
-	StrategyBurnIO = "BurnIo"
-
-	// StrategyKillProcesses ...
-	StrategyKillProcesses = "KillProcesses"
-
-	// StrategyNullRoute ...
-	StrategyNullRoute = "NullRoute"
-
-	// StrategyFailEC2 ...
-	StrategyFailEC2 = "FailEc2"
-
-	// StrategyFailDNS ...
-	StrategyFailDNS = "FailDns"
-
-	// StrategyFailDynamoDB ...
-	StrategyFailDynamoDB = "FailDynamoDb"
-
-	// StrategyFailS3 ...
-	StrategyFailS3 = "FailS3"
-
-	// StrategyFillDisk ...
-	StrategyFillDisk = "FillDisk"
-
-	// StrategyNetworkCorruption ...
-	StrategyNetworkCorruption = "NetworkCorruption"
-
-	// StrategyNetworkLatency ...
-	StrategyNetworkLatency = "NetworkLatency"
-
-	// StrategyNetworkLoss ...
-	StrategyNetworkLoss = "NetworkLoss"
-)
-
 // ChaosEvent describes when and how Chaos Monkey terminated an EC2 instance.
 type ChaosEvent struct {
 	// Name of chaos strategy that was used, e.g. "ShutdownInstance"
