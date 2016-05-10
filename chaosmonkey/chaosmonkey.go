@@ -35,15 +35,15 @@ type ChaosEvent struct {
 	Time       time.Time
 }
 
-type chaosRequest struct {
+type apiRequest struct {
 	EventType string `json:"eventType"`
 	GroupType string `json:"groupType"`
 	GroupName string `json:"groupName"`
 	ChaosType string `json:"chaosType,omitempty"`
 }
 
-type chaosResponse struct {
-	*chaosRequest
+type apiResponse struct {
+	*apiRequest
 
 	MonkeyType string `json:"monkeyType"`
 	EventID    string `json:"eventId"`
@@ -76,7 +76,7 @@ func NewClient(c *Config) (*Client, error) {
 func (c *Client) TriggerEvent(asgName, strategy string) (*ChaosEvent, error) {
 	url := c.config.Endpoint + "/simianarmy/api/v1/chaos"
 
-	body, err := json.Marshal(chaosRequest{
+	body, err := json.Marshal(apiRequest{
 		EventType: "CHAOS_TERMINATION",
 		GroupType: "ASG",
 		GroupName: asgName,
@@ -86,7 +86,7 @@ func (c *Client) TriggerEvent(asgName, strategy string) (*ChaosEvent, error) {
 		return nil, err
 	}
 
-	var resp chaosResponse
+	var resp apiResponse
 	if err := c.sendRequest("POST", url, bytes.NewReader(body), &resp); err != nil {
 		return nil, err
 	}
@@ -97,7 +97,7 @@ func (c *Client) TriggerEvent(asgName, strategy string) (*ChaosEvent, error) {
 func (c *Client) GetEvents() ([]ChaosEvent, error) {
 	url := c.config.Endpoint + "/simianarmy/api/v1/chaos"
 
-	var resp []chaosResponse
+	var resp []apiResponse
 	if err := c.sendRequest("GET", url, nil, &resp); err != nil {
 		return nil, err
 	}
@@ -143,7 +143,7 @@ func decodeError(resp *http.Response) error {
 	return fmt.Errorf("%s", resp.Status)
 }
 
-func makeChaosEvent(in *chaosResponse) *ChaosEvent {
+func makeChaosEvent(in *apiResponse) *ChaosEvent {
 	return &ChaosEvent{
 		Strategy:   in.ChaosType,
 		ASGName:    in.GroupName,
