@@ -21,7 +21,7 @@ func main() {
 
 	flag.StringVar(&asgName, "asg", "", "Name of auto scaling group")
 	flag.StringVar(&strategy, "strategy", "", "Chaos strategy to use")
-	flag.StringVar(&endpoint, "endpoint", "http://127.0.0.1:8080", "HTTP endpoint")
+	flag.StringVar(&endpoint, "endpoint", "", "HTTP endpoint")
 	flag.StringVar(&username, "username", "", "HTTP username")
 	flag.StringVar(&password, "password", "", "HTTP password")
 	flag.Parse()

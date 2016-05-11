@@ -68,7 +68,7 @@ type Client struct {
 // NewClient returns a new client for the given configuration.
 func NewClient(c *Config) (*Client, error) {
 	if c.Endpoint == "" {
-		return nil, fmt.Errorf("Endpoint must not be empty")
+		c.Endpoint = "http://127.0.0.1:8080"
 	}
 	if c.HTTPClient == nil {
 		c.HTTPClient = http.DefaultClient
