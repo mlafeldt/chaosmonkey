@@ -53,17 +53,17 @@ func main() {
 }
 
 func printEvents(event ...chaosmonkey.ChaosEvent) {
-	lines := []string{"Instance|AutoScalingGroup|Region|Strategy|TriggeredAt"}
+	lines := []string{"InstanceID|AutoScalingGroupName|Region|Strategy|TriggeredAt"}
 	for _, e := range event {
 		lines = append(lines, fmt.Sprintf("%s|%s|%s|%s|%s",
 			e.InstanceID,
-			e.ASGName,
+			e.AutoScalingGroupName,
 			e.Region,
 			e.Strategy,
-			e.Time.Format(time.RFC3339),
+			e.TriggeredAt.Format(time.RFC3339),
 		))
 	}
-	fmt.Println(columnize.Format(lines, columnize.DefaultConfig()))
+	fmt.Println(columnize.SimpleFormat(lines))
 }
 
 func abort(format string, a ...interface{}) {

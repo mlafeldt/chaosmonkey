@@ -17,7 +17,7 @@ type ChaosEvent struct {
 	Strategy string
 
 	// Name of auto scaling group containing the terminated EC2 instance
-	ASGName string
+	AutoScalingGroupName string
 
 	// ID of EC2 instance that was terminated
 	InstanceID string
@@ -25,8 +25,8 @@ type ChaosEvent struct {
 	// AWS region of EC2 instance and its auto scaling group
 	Region string
 
-	// Time of the chaos event
-	Time time.Time
+	// Time when the chaos event was triggered
+	TriggeredAt time.Time
 }
 
 type apiRequest struct {
@@ -150,10 +150,10 @@ func decodeError(resp *http.Response) error {
 
 func makeChaosEvent(in *apiResponse) *ChaosEvent {
 	return &ChaosEvent{
-		Strategy:   in.ChaosType,
-		ASGName:    in.GroupName,
-		InstanceID: in.EventID,
-		Region:     in.Region,
-		Time:       time.Unix(in.EventTime/1000, 0).UTC(),
+		Strategy:             in.ChaosType,
+		AutoScalingGroupName: in.GroupName,
+		InstanceID:           in.EventID,
+		Region:               in.Region,
+		TriggeredAt:          time.Unix(in.EventTime/1000, 0).UTC(),
 	}
 }
