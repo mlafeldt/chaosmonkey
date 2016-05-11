@@ -12,34 +12,32 @@ import (
 
 func main() {
 	var (
-		asgName  string
+		group    string
 		strategy string
 		endpoint string
 		username string
 		password string
 	)
 
-	flag.StringVar(&asgName, "asg", "", "Name of auto scaling group")
+	flag.StringVar(&group, "group", "", "Name of auto scaling group")
 	flag.StringVar(&strategy, "strategy", "", "Chaos strategy to use")
 	flag.StringVar(&endpoint, "endpoint", "", "HTTP endpoint")
 	flag.StringVar(&username, "username", "", "HTTP username")
 	flag.StringVar(&password, "password", "", "HTTP password")
 	flag.Parse()
 
-	config := chaosmonkey.Config{
+	client, err := chaosmonkey.NewClient(&chaosmonkey.Config{
 		Endpoint:   endpoint,
 		Username:   username,
 		Password:   password,
 		HTTPClient: &http.Client{Timeout: 10 * time.Second},
-	}
-
-	client, err := chaosmonkey.NewClient(&config)
+	})
 	if err != nil {
 		abort("%s", err)
 	}
 
-	if asgName != "" {
-		event, err := client.TriggerEvent(asgName, strategy)
+	if group != "" {
+		event, err := client.TriggerEvent(group, strategy)
 		if err != nil {
 			abort("%s", err)
 		}
