@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/mlafeldt/havoc/chaosmonkey"
+	"github.com/ryanuber/columnize"
 )
 
 func main() {
@@ -41,16 +42,28 @@ func main() {
 		if err != nil {
 			abort("%s", err)
 		}
-		fmt.Printf("%+v\n", event)
+		printEvents(*event)
 	} else {
 		events, err := client.GetEvents()
 		if err != nil {
 			abort("%s", err)
 		}
-		for _, e := range events {
-			fmt.Printf("%+v\n", e)
-		}
+		printEvents(events...)
 	}
+}
+
+func printEvents(event ...chaosmonkey.ChaosEvent) {
+	lines := []string{"Instance|AutoScalingGroup|Region|Strategy|TriggeredAt"}
+	for _, e := range event {
+		lines = append(lines, fmt.Sprintf("%s|%s|%s|%s|%s",
+			e.InstanceID,
+			e.ASGName,
+			e.Region,
+			e.Strategy,
+			e.Time.Format(time.RFC3339),
+		))
+	}
+	fmt.Println(columnize.Format(lines, columnize.DefaultConfig()))
 }
 
 func abort(format string, a ...interface{}) {
