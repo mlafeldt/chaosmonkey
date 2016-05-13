@@ -1,5 +1,11 @@
-// Package chaosmonkey allows to talk to the Chaos Monkey REST API to trigger
-// and retrieve chaos events.
+// Package chaosmonkey provides a client to the Chaos Monkey REST API. The
+// client can be used to trigger chaos events, thereby causing Chaos Monkey to
+// "break" EC2 instances in different ways, and to retrieve information about
+// past chaos events.
+//
+// Note that in order to trigger chaos events, Chaos Monkey must be unleashed
+// (simianarmy.chaos.leashed=false) and on-demand termination must be enabled
+// (simianarmy.chaos.terminateOndemand.enabled=true).
 package chaosmonkey
 
 import (
@@ -11,19 +17,19 @@ import (
 	"time"
 )
 
-// ChaosEvent describes when and how Chaos Monkey terminated an EC2 instance.
+// ChaosEvent describes the termination of an EC2 instance by Chaos Monkey.
 type ChaosEvent struct {
-	// Name of chaos strategy that was used, e.g. "ShutdownInstance"
-	Strategy string
-
-	// Name of auto scaling group containing the terminated EC2 instance
-	AutoScalingGroupName string
-
 	// ID of EC2 instance that was terminated
 	InstanceID string
 
-	// AWS region of EC2 instance and its auto scaling group
+	// Name of auto scaling group containing the terminated instance
+	AutoScalingGroupName string
+
+	// AWS region of the instance and its auto scaling group
 	Region string
+
+	// Name of used chaos strategy, e.g. "ShutdownInstance"
+	Strategy string
 
 	// Time when the chaos event was triggered
 	TriggeredAt time.Time
@@ -76,14 +82,16 @@ func NewClient(c *Config) (*Client, error) {
 	return &Client{config: c}, nil
 }
 
-// TriggerEvent triggers a new chaos event.
-func (c *Client) TriggerEvent(asgName, strategy string) (*ChaosEvent, error) {
+// TriggerEvent triggers a new chaos event which will cause Chaos Monkey to
+// "break" an EC2 instance in the given auto scaling group using the specified
+// chaos strategy.
+func (c *Client) TriggerEvent(group, strategy string) (*ChaosEvent, error) {
 	url := c.config.Endpoint + "/simianarmy/api/v1/chaos"
 
 	body, err := json.Marshal(apiRequest{
 		EventType: "CHAOS_TERMINATION",
 		GroupType: "ASG",
-		GroupName: asgName,
+		GroupName: group,
 		ChaosType: strategy,
 	})
 	if err != nil {
@@ -98,8 +106,8 @@ func (c *Client) TriggerEvent(asgName, strategy string) (*ChaosEvent, error) {
 	return makeChaosEvent(&resp), nil
 }
 
-// GetEvents returns a list of past chaos events.
-func (c *Client) GetEvents() ([]ChaosEvent, error) {
+// Events returns a list of past chaos events.
+func (c *Client) Events() ([]ChaosEvent, error) {
 	url := c.config.Endpoint + "/simianarmy/api/v1/chaos"
 
 	var resp []apiResponse
@@ -150,10 +158,10 @@ func decodeError(resp *http.Response) error {
 
 func makeChaosEvent(in *apiResponse) *ChaosEvent {
 	return &ChaosEvent{
-		Strategy:             in.ChaosType,
-		AutoScalingGroupName: in.GroupName,
 		InstanceID:           in.EventID,
+		AutoScalingGroupName: in.GroupName,
 		Region:               in.Region,
+		Strategy:             in.ChaosType,
 		TriggeredAt:          time.Unix(in.EventTime/1000, 0).UTC(),
 	}
 }

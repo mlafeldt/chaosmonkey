@@ -44,7 +44,7 @@ func main() {
 		}
 		printEvents(*event)
 	} else {
-		events, err := client.GetEvents()
+		events, err := client.Events()
 		if err != nil {
 			abort("%s", err)
 		}
