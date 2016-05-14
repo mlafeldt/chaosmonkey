@@ -1,11 +1,31 @@
-// Package chaosmonkey provides a client to the Chaos Monkey REST API. The
-// client can be used to trigger chaos events, thereby causing Chaos Monkey to
-// "break" EC2 instances in different ways, and to retrieve information about
-// past chaos events.
-//
-// Note that in order to trigger chaos events, Chaos Monkey must be unleashed
-// (simianarmy.chaos.leashed=false) and on-demand termination must be enabled
-// (simianarmy.chaos.terminateOndemand.enabled=true).
+/*
+Package chaosmonkey provides a client to the Chaos Monkey REST API.
+
+The client can be used to trigger chaos events, thereby causing Chaos Monkey to
+"break" EC2 instances in different ways, to simulate different types of
+failures:
+
+	client, err := chaosmonkey.NewClient(&chaosmonkey.Config{
+		Endpoint: "http://chaosmonkey.example.com:8080",
+	})
+	if err != nil {
+		// handle error
+	}
+	event, err := client.TriggerEvent("ExampleAutoScalingGroup",
+		chaosmonkey.StrategyShutdownInstance)
+	...
+
+Similar, the client can be used to retrieve information about past chaos events:
+
+	events, err := client.Events()
+	...
+
+Note that in order to trigger chaos events, Chaos Monkey must be unleashed and
+on-demand termination must be enabled via these configuration properties:
+
+	simianarmy.chaos.leashed = false
+	simianarmy.chaos.terminateOndemand.enabled = true
+*/
 package chaosmonkey
 
 import (
