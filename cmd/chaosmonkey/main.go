@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/mlafeldt/havoc/chaosmonkey"
+	"github.com/mlafeldt/chaosmonkey/chaosmonkey"
 	"github.com/ryanuber/columnize"
 )
 

@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mlafeldt/havoc/chaosmonkey"
+	"github.com/mlafeldt/chaosmonkey/chaosmonkey"
 )
 
 const newEvent = `
