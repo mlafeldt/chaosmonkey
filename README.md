@@ -20,8 +20,8 @@ simianarmy.chaos.terminateOndemand.enabled = true
 
 Run this command to install the `chaosmonkey` library from source:
 
-```
-$ go get github.com/mlafeldt/chaosmonkey/chaosmonkey
+```bash
+go get github.com/mlafeldt/chaosmonkey/chaosmonkey
 ```
 
 For usage and examples, see the [Godoc documentation](https://godoc.org/github.com/mlafeldt/chaosmonkey/chaosmonkey).
@@ -30,21 +30,21 @@ For usage and examples, see the [Godoc documentation](https://godoc.org/github.c
 
 In addition to the library, the project provides the `chaosmonkey` command-line tool, which you can install this way:
 
-```
-$ go get github.com/mlafeldt/chaosmonkey/cmd/chaosmonkey
+```bash
+go get github.com/mlafeldt/chaosmonkey/cmd/chaosmonkey
 ```
 
 Use the tool to trigger a new chaos event:
 
-```
-$ chaosmonkey -endpoint http://chaosmonkey.example.com:8080 \
+```bash
+chaosmonkey -endpoint http://chaosmonkey.example.com:8080 \
     -strategy ShutdownInstance -group ExampleAutoScalingGroup
 ```
 
 Or to get a list of past chaos events:
 
-```
-$ chaosmonkey -endpoint http://chaosmonkey.example.com:8080
+```bash
+chaosmonkey -endpoint http://chaosmonkey.example.com:8080
 ```
 
 Run `chaosmonkey -h` for a list of all available options.
@@ -53,7 +53,7 @@ Run `chaosmonkey -h` for a list of all available options.
 
 [This Docker image](https://github.com/mlafeldt/docker-simianarmy) allows you to deploy Chaos Monkey using a single command:
 
-```
+```bash
 docker run -it --rm -p 8080:8080 \
     -e SIMIANARMY_CLIENT_AWS_ACCOUNTKEY=$AWS_ACCESS_KEY_ID \
     -e SIMIANARMY_CLIENT_AWS_SECRETKEY=$AWS_SECRET_ACCESS_KEY \
@@ -65,7 +65,7 @@ docker run -it --rm -p 8080:8080 \
 
 You can then use `chaosmonkey` to talk to the dockerized Chaos Monkey:
 
-```
+```bash
 chaosmonkey -endpoint http://$DOCKER_HOST_IP:8080 ...
 ```
 
