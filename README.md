@@ -1,7 +1,7 @@
 # chaosmonkey
 
 [![Build Status](https://travis-ci.org/mlafeldt/chaosmonkey.svg?branch=master)](https://travis-ci.org/mlafeldt/chaosmonkey)
-[![GoDoc](https://godoc.org/github.com/mlafeldt/chaosmonkey/chaosmonkey?status.svg)](https://godoc.org/github.com/mlafeldt/chaosmonkey/chaosmonkey)
+[![GoDoc](https://godoc.org/github.com/mlafeldt/chaosmonkey?status.svg)](https://godoc.org/github.com/mlafeldt/chaosmonkey)
 
 Go client to the [Chaos Monkey REST API](https://github.com/Netflix/SimianArmy/wiki/REST) that can be used to trigger and retrieve chaos events.
 
@@ -23,10 +23,10 @@ simianarmy.chaos.terminateOndemand.enabled = true
 Run this command to install the `chaosmonkey` library from source:
 
 ```bash
-go get github.com/mlafeldt/chaosmonkey/chaosmonkey
+go get github.com/mlafeldt/chaosmonkey
 ```
 
-For usage and examples, see the [Godoc documentation](https://godoc.org/github.com/mlafeldt/chaosmonkey/chaosmonkey).
+For usage and examples, see the [Godoc documentation](https://godoc.org/github.com/mlafeldt/chaosmonkey).
 
 ## CLI
 
