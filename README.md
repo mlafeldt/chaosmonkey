@@ -9,9 +9,9 @@ This project was started for the purpose of controlled failure-injection during 
 
 ## Prerequisites
 
-First of all, you need a running Simian Army server that is reachable via HTTP (basic auth is supported too).
+First of all, you need a running [Simian Army](https://github.com/Netflix/SimianArmy) that exposes its REST API via HTTP.
 
-In order to trigger chaos events, Chaos Monkey must be unleashed and on-demand termination must be enabled via these configuration properties:
+In order to trigger chaos events via the API, Chaos Monkey must be unleashed and on-demand termination must be enabled via these configuration properties:
 
 ```
 simianarmy.chaos.leashed = false
@@ -20,7 +20,7 @@ simianarmy.chaos.terminateOndemand.enabled = true
 
 ## Go library
 
-Run this command to install the `chaosmonkey` library from source:
+To install the `chaosmonkey` library from source:
 
 ```bash
 go get github.com/mlafeldt/chaosmonkey
@@ -53,7 +53,7 @@ Run `chaosmonkey -h` for a list of all available options.
 
 ## Use with Docker
 
-[This Docker image](https://github.com/mlafeldt/docker-simianarmy) allows you to deploy Chaos Monkey using a single command:
+[This Docker image](https://github.com/mlafeldt/docker-simianarmy) allows you to deploy Chaos Monkey with a single command:
 
 ```bash
 docker run -it --rm -p 8080:8080 \
@@ -65,7 +65,7 @@ docker run -it --rm -p 8080:8080 \
     mlafeldt/simianarmy
 ```
 
-You can then use `chaosmonkey` to talk to the dockerized Chaos Monkey:
+Afterwards, you can use `chaosmonkey` to talk to the dockerized Chaos Monkey:
 
 ```bash
 chaosmonkey -endpoint http://$DOCKER_HOST_IP:8080 ...
