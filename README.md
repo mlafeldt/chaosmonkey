@@ -5,7 +5,7 @@
 
 Go client to the [Chaos Monkey REST API](https://github.com/Netflix/SimianArmy/wiki/REST) that can be used to trigger and retrieve chaos events.
 
-I started the project for the purpose of controlled failure-injection during GameDay events.
+This project was started for the purpose of controlled failure-injection during GameDay events.
 
 ## Prerequisites
 
