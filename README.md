@@ -9,6 +9,8 @@ This project was started for the purpose of controlled failure-injection during 
 
 ## Prerequisites
 
+First of all, you need a running Simian Army server that is reachable via HTTP (basic auth is supported too).
+
 In order to trigger chaos events, Chaos Monkey must be unleashed and on-demand termination must be enabled via these configuration properties:
 
 ```
