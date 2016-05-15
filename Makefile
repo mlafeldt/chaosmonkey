@@ -6,4 +6,6 @@ lint:
 	golint -set_exit_status ./...
 
 deps:
-	go get github.com/golang/lint/golint
+	go get \
+		github.com/golang/lint/golint \
+		github.com/ryanuber/columnize
