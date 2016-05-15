@@ -5,7 +5,7 @@
 
 Go client to the [Chaos Monkey REST API](https://github.com/Netflix/SimianArmy/wiki/REST) that can be used to trigger and retrieve chaos events.
 
-I primarily started the project for controlled failure-injection during GameDay events (in combination with this [Docker image](https://github.com/mlafeldt/docker-simianarmy)).
+I started the project for the purpose of controlled failure-injection during GameDay events (in combination with [this Docker image](https://github.com/mlafeldt/docker-simianarmy)).
 
 ## Go library
 
