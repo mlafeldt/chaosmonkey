@@ -12,9 +12,9 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
+	"github.com/ryanuber/columnize"
 
 	"github.com/mlafeldt/chaosmonkey"
-	"github.com/ryanuber/columnize"
 )
 
 func main() {
