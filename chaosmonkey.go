@@ -37,8 +37,8 @@ import (
 	"time"
 )
 
-// ChaosStrategy defines a strategy for terminating EC2 instances.
-type ChaosStrategy string
+// Strategy defines a chaos strategy for terminating EC2 instances.
+type Strategy string
 
 // ChaosEvent describes the termination of an EC2 instance by Chaos Monkey.
 type ChaosEvent struct {
@@ -52,7 +52,7 @@ type ChaosEvent struct {
 	Region string
 
 	// Chaos strategy used to terminate the instance
-	Strategy ChaosStrategy
+	Strategy Strategy
 
 	// Time when the chaos event was triggered
 	TriggeredAt time.Time
@@ -108,7 +108,7 @@ func NewClient(c *Config) (*Client, error) {
 // TriggerEvent triggers a new chaos event which will cause Chaos Monkey to
 // "break" an EC2 instance in the given auto scaling group using the specified
 // chaos strategy.
-func (c *Client) TriggerEvent(group string, strategy ChaosStrategy) (*ChaosEvent, error) {
+func (c *Client) TriggerEvent(group string, strategy Strategy) (*ChaosEvent, error) {
 	url := c.config.Endpoint + "/simianarmy/api/v1/chaos"
 
 	body, err := json.Marshal(apiRequest{
@@ -184,7 +184,7 @@ func makeChaosEvent(in *apiResponse) *ChaosEvent {
 		InstanceID:           in.EventID,
 		AutoScalingGroupName: in.GroupName,
 		Region:               in.Region,
-		Strategy:             ChaosStrategy(in.ChaosType),
+		Strategy:             Strategy(in.ChaosType),
 		TriggeredAt:          time.Unix(in.EventTime/1000, 0).UTC(),
 	}
 }

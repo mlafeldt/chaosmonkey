@@ -89,7 +89,7 @@ const (
 )
 
 // Strategies is a list of default chaos strategies supported by Chaos Monkey.
-var Strategies = []ChaosStrategy{
+var Strategies = []Strategy{
 	StrategyShutdownInstance,
 	StrategyBlockAllNetworkTraffic,
 	StrategyDetachVolumes,

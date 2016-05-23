@@ -65,7 +65,7 @@ func main() {
 	}
 
 	if group != "" {
-		event, err := client.TriggerEvent(group, chaosmonkey.ChaosStrategy(strategy))
+		event, err := client.TriggerEvent(group, chaosmonkey.Strategy(strategy))
 		if err != nil {
 			abort("%s", err)
 		}
