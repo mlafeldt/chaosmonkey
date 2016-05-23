@@ -40,8 +40,8 @@ import (
 // Strategy defines a chaos strategy for terminating EC2 instances.
 type Strategy string
 
-// ChaosEvent describes the termination of an EC2 instance by Chaos Monkey.
-type ChaosEvent struct {
+// Event describes the termination of an EC2 instance by Chaos Monkey.
+type Event struct {
 	// ID of EC2 instance that was terminated
 	InstanceID string
 
@@ -108,7 +108,7 @@ func NewClient(c *Config) (*Client, error) {
 // TriggerEvent triggers a new chaos event which will cause Chaos Monkey to
 // "break" an EC2 instance in the given auto scaling group using the specified
 // chaos strategy.
-func (c *Client) TriggerEvent(group string, strategy Strategy) (*ChaosEvent, error) {
+func (c *Client) TriggerEvent(group string, strategy Strategy) (*Event, error) {
 	url := c.config.Endpoint + "/simianarmy/api/v1/chaos"
 
 	body, err := json.Marshal(apiRequest{
@@ -126,11 +126,11 @@ func (c *Client) TriggerEvent(group string, strategy Strategy) (*ChaosEvent, err
 		return nil, err
 	}
 
-	return makeChaosEvent(&resp), nil
+	return makeEvent(&resp), nil
 }
 
 // Events returns a list of past chaos events.
-func (c *Client) Events() ([]ChaosEvent, error) {
+func (c *Client) Events() ([]Event, error) {
 	url := c.config.Endpoint + "/simianarmy/api/v1/chaos"
 
 	var resp []apiResponse
@@ -138,9 +138,9 @@ func (c *Client) Events() ([]ChaosEvent, error) {
 		return nil, err
 	}
 
-	var events []ChaosEvent
+	var events []Event
 	for _, r := range resp {
-		events = append(events, *makeChaosEvent(&r))
+		events = append(events, *makeEvent(&r))
 	}
 
 	return events, nil
@@ -179,8 +179,8 @@ func decodeError(resp *http.Response) error {
 	return fmt.Errorf("%s", resp.Status)
 }
 
-func makeChaosEvent(in *apiResponse) *ChaosEvent {
-	return &ChaosEvent{
+func makeEvent(in *apiResponse) *Event {
+	return &Event{
 		InstanceID:           in.EventID,
 		AutoScalingGroupName: in.GroupName,
 		Region:               in.Region,

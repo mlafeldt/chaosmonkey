@@ -95,7 +95,7 @@ func autoScalingGroups() ([]string, error) {
 	return groups, nil
 }
 
-func printEvents(event ...chaosmonkey.ChaosEvent) {
+func printEvents(event ...chaosmonkey.Event) {
 	lines := []string{"InstanceID|AutoScalingGroupName|Region|Strategy|TriggeredAt"}
 	for _, e := range event {
 		lines = append(lines, fmt.Sprintf("%s|%s|%s|%s|%s",

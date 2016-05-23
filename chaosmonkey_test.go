@@ -85,7 +85,7 @@ func TestTriggerEvent(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	expected := &chaosmonkey.ChaosEvent{
+	expected := &chaosmonkey.Event{
 		InstanceID:           "i-12345678",
 		AutoScalingGroupName: "SomeAutoScalingGroup",
 		Region:               "eu-west-1",
@@ -104,7 +104,7 @@ func TestEvents(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	expected := []chaosmonkey.ChaosEvent{
+	expected := []chaosmonkey.Event{
 		{
 			InstanceID:           "i-12345678",
 			AutoScalingGroupName: "SomeAutoScalingGroup",
