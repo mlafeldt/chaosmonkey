@@ -13,11 +13,12 @@ import (
 
 func main() {
 	var (
-		group    string
-		strategy string
-		endpoint string
-		username string
-		password string
+		group          string
+		strategy       string
+		endpoint       string
+		username       string
+		password       string
+		listStrategies bool
 	)
 
 	flag.StringVar(&group, "group", "", "Name of auto scaling group")
@@ -25,7 +26,15 @@ func main() {
 	flag.StringVar(&endpoint, "endpoint", "", "HTTP endpoint")
 	flag.StringVar(&username, "username", "", "HTTP username")
 	flag.StringVar(&password, "password", "", "HTTP password")
+	flag.BoolVar(&listStrategies, "list-strategies", false, "List default chaos strategies")
 	flag.Parse()
+
+	if listStrategies {
+		for _, s := range chaosmonkey.Strategies {
+			fmt.Println(s)
+		}
+		return
+	}
 
 	client, err := chaosmonkey.NewClient(&chaosmonkey.Config{
 		Endpoint:   endpoint,

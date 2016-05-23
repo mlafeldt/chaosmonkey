@@ -87,3 +87,22 @@ const (
 	// network. Requires SSH to be configured.
 	StrategyNetworkLoss = "NetworkLoss"
 )
+
+// Strategies is a list of default chaos strategies supported by Chaos Monkey.
+var Strategies = []ChaosStrategy{
+	StrategyShutdownInstance,
+	StrategyBlockAllNetworkTraffic,
+	StrategyDetachVolumes,
+	StrategyBurnCPU,
+	StrategyBurnIO,
+	StrategyKillProcesses,
+	StrategyNullRoute,
+	StrategyFailEC2,
+	StrategyFailDNS,
+	StrategyFailDynamoDB,
+	StrategyFailS3,
+	StrategyFillDisk,
+	StrategyNetworkCorruption,
+	StrategyNetworkLatency,
+	StrategyNetworkLoss,
+}
