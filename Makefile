@@ -7,5 +7,7 @@ lint:
 
 deps:
 	go get \
+		github.com/aws/aws-sdk-go/aws/... \
+		github.com/aws/aws-sdk-go/service/... \
 		github.com/golang/lint/golint \
 		github.com/ryanuber/columnize
