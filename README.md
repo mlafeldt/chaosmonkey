@@ -36,20 +36,37 @@ In addition to the library, the project provides the `chaosmonkey` command-line 
 go get github.com/mlafeldt/chaosmonkey/cmd/chaosmonkey
 ```
 
-Use the tool to trigger a new chaos event:
+Use the tool to:
 
-```bash
-chaosmonkey -endpoint http://chaosmonkey.example.com:8080 \
-    -strategy ShutdownInstance -group ExampleAutoScalingGroup
-```
+* Trigger a new chaos event:
 
-Or to get a list of past chaos events:
+    ```bash
+    chaosmonkey -endpoint http://chaosmonkey.example.com:8080 \
+        -strategy ShutdownInstance -group ExampleAutoScalingGroup
+    ```
 
-```bash
-chaosmonkey -endpoint http://chaosmonkey.example.com:8080
-```
+* Get a list of past chaos events:
 
-Run `chaosmonkey -h` for a list of all available options.
+    ```bash
+    chaosmonkey -endpoint http://chaosmonkey.example.com:8080
+    ```
+
+* List all auto scaling groups for a given AWS account, which you may then pass to `-group`:
+
+    ```bash
+    export AWS_ACCESS_KEY_ID...
+    export AWS_SECRET_ACCESS_KEY=...
+    export AWS_REGION=...
+    chaosmonkey -list-groups
+    ```
+
+* List available chaos strategies, which you may pass to `-strategy`:
+
+    ```bash
+    chaosmonkey -list-strategies
+    ```
+
+As always, invoke `chaosmonkey -h` for a list of all available options.
 
 ## Use with Docker
 
