@@ -1,4 +1,4 @@
-## v0.2.0 (unreleased)
+## v0.2.0 (2016-05-24)
 
 * (LIB) Introduce `Strategy` type.
 * (LIB) Add `Strategies` variable -- a list of chaos strategies.
