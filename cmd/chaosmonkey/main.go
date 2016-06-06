@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"runtime"
 	"sort"
 	"strings"
 	"time"
@@ -17,6 +18,10 @@ import (
 	"github.com/mlafeldt/chaosmonkey"
 )
 
+// Version is the current version of the chaosmonkey tool. A ".dev" suffix
+// denotes that the version is currently being developed.
+const Version = "v0.3.0.dev"
+
 func main() {
 	var (
 		group    string
@@ -27,6 +32,7 @@ func main() {
 
 		listGroups     bool
 		listStrategies bool
+		showVersion    bool
 	)
 
 	flag.StringVar(&group, "group", "", "Name of auto scaling group")
@@ -36,21 +42,25 @@ func main() {
 	flag.StringVar(&password, "password", "", "HTTP password")
 	flag.BoolVar(&listGroups, "list-groups", false, "List auto scaling groups")
 	flag.BoolVar(&listStrategies, "list-strategies", false, "List default chaos strategies")
+	flag.BoolVar(&showVersion, "version", false, "Show program version")
 	flag.Parse()
 
-	if listGroups {
+	switch {
+	case listGroups:
 		groups, err := autoScalingGroups()
 		if err != nil {
 			abort("failed to get auto scaling groups: %s", err)
 		}
 		fmt.Println(strings.Join(groups, "\n"))
 		return
-	}
-
-	if listStrategies {
+	case listStrategies:
 		for _, s := range chaosmonkey.Strategies {
 			fmt.Println(s)
 		}
+		return
+	case showVersion:
+		fmt.Printf("chaosmonkey %s %s/%s %s\n", Version,
+			runtime.GOOS, runtime.GOARCH, runtime.Version())
 		return
 	}
 
