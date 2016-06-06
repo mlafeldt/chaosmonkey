@@ -68,6 +68,7 @@ func main() {
 		Endpoint:   endpoint,
 		Username:   username,
 		Password:   password,
+		UserAgent:  fmt.Sprintf("chaosmonkey Go client %s", Version),
 		HTTPClient: &http.Client{Timeout: 10 * time.Second},
 	})
 	if err != nil {

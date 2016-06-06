@@ -85,6 +85,9 @@ type Config struct {
 	// Optional password for HTTP Basic Authentication
 	Password string
 
+	// Custom HTTP User Agent
+	UserAgent string
+
 	// Custom HTTP client to use (http.DefaultClient by default)
 	HTTPClient *http.Client
 }
@@ -98,6 +101,9 @@ type Client struct {
 func NewClient(c *Config) (*Client, error) {
 	if c.Endpoint == "" {
 		c.Endpoint = "http://127.0.0.1:8080"
+	}
+	if c.UserAgent == "" {
+		c.UserAgent = "chaosmonkey Go library"
 	}
 	if c.HTTPClient == nil {
 		c.HTTPClient = http.DefaultClient
@@ -155,6 +161,7 @@ func (c *Client) sendRequest(method, url string, body io.Reader, out interface{}
 	if c.config.Username != "" && c.config.Password != "" {
 		req.SetBasicAuth(c.config.Username, c.config.Password)
 	}
+	req.Header.Add("User-Agent", c.config.UserAgent)
 
 	resp, err := c.config.HTTPClient.Do(req)
 	if err != nil {
