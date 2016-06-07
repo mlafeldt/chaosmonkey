@@ -6,9 +6,9 @@ go:
   - 1.5
   - 1.6
 
-install: make deps
+install: go get github.com/golang/lint/golint
 
-script: make lint test
+script: make lint test GO15VENDOREXPERIMENT=1
 
 branches:
   only:
