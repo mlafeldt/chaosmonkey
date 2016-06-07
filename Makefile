@@ -11,3 +11,6 @@ deps:
 		github.com/aws/aws-sdk-go/service/... \
 		github.com/golang/lint/golint \
 		github.com/ryanuber/columnize
+
+build: test lint
+	go build

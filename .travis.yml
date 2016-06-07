@@ -8,7 +8,9 @@ go:
 
 install: make deps
 
-script: make lint test
+script:
+  - make build
+  - ./chaosmonkey --version
 
 branches:
   only:
