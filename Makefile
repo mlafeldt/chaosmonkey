@@ -1,13 +1,8 @@
+PACKAGES := $(shell go list ./... | grep -v vendor)
+
 test:
-	go test -v -cover ./...
+	go test -v -cover $(PACKAGES)
 
 lint:
-	go vet ./...
-	golint -set_exit_status ./...
-
-deps:
-	go get \
-		github.com/aws/aws-sdk-go/aws/... \
-		github.com/aws/aws-sdk-go/service/... \
-		github.com/golang/lint/golint \
-		github.com/ryanuber/columnize
+	go vet $(PACKAGES)
+	echo $(PACKAGES) | xargs -n1 golint -set_exit_status
