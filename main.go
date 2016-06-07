@@ -15,7 +15,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/ryanuber/columnize"
 
-	"github.com/mlafeldt/chaosmonkey"
+	chaosmonkey "github.com/mlafeldt/chaosmonkey/lib"
 )
 
 // Version is the current version of the chaosmonkey tool. A ".dev" suffix

@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mlafeldt/chaosmonkey"
+	chaosmonkey "github.com/mlafeldt/chaosmonkey/lib"
 )
 
 const newEvent = `

@@ -1,11 +1,11 @@
 # chaosmonkey
 
 [![Build Status](https://travis-ci.org/mlafeldt/chaosmonkey.svg?branch=master)](https://travis-ci.org/mlafeldt/chaosmonkey)
-[![GoDoc](https://godoc.org/github.com/mlafeldt/chaosmonkey?status.svg)](https://godoc.org/github.com/mlafeldt/chaosmonkey)
+[![GoDoc](https://godoc.org/github.com/mlafeldt/chaosmonkey/lib?status.svg)](https://godoc.org/github.com/mlafeldt/chaosmonkey/lib)
 
 Go client to the [Chaos Monkey REST API](https://github.com/Netflix/SimianArmy/wiki/REST) that can be used to trigger and retrieve chaos events.
 
-This project was started for the purpose of controlled failure-injection during GameDay events.
+This project was started for the purpose of controlled failure injection during GameDay events.
 
 ## Prerequisites
 
@@ -18,22 +18,12 @@ simianarmy.chaos.leashed = false
 simianarmy.chaos.terminateOndemand.enabled = true
 ```
 
-## Go library
-
-To install the `chaosmonkey` library from source:
-
-```bash
-go get github.com/mlafeldt/chaosmonkey
-```
-
-For usage and examples, see the [Godoc documentation](https://godoc.org/github.com/mlafeldt/chaosmonkey).
-
 ## CLI
 
-In addition to the library, the project provides the `chaosmonkey` command-line tool, which you can install this way:
+You can install the `chaosmonkey` command-line tool this way:
 
 ```bash
-go get github.com/mlafeldt/chaosmonkey/cmd/chaosmonkey
+go get -u github.com/mlafeldt/chaosmonkey
 ```
 
 Use the tool to:
@@ -87,6 +77,16 @@ Afterwards, you can use `chaosmonkey` to talk to the dockerized Chaos Monkey:
 ```bash
 chaosmonkey -endpoint http://$DOCKER_HOST_IP:8080 ...
 ```
+
+## Go library
+
+In addition to the CLI tool, the project also provides the `chaosmonkey` Go library for use in other Go projects. To install it from source:
+
+```bash
+go get -u github.com/mlafeldt/chaosmonkey/lib
+```
+
+For usage and examples, see the [Godoc documentation](https://godoc.org/github.com/mlafeldt/chaosmonkey/lib).
 
 ## Author
 
