@@ -5,6 +5,7 @@ sudo: false
 go:
   - 1.5
   - 1.6
+  - tip
 
 install: make deps
 
@@ -15,3 +16,7 @@ script:
 branches:
   only:
     - master
+
+matrix:
+  allow_failures:
+    - go: tip
