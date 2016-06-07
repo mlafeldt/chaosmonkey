@@ -137,7 +137,7 @@ func (c *Client) TriggerEvent(group string, strategy Strategy) (*Event, error) {
 
 // Events returns a list of past chaos events.
 func (c *Client) Events() ([]Event, error) {
-	url := c.config.Endpoint + "/simianarmy/api/v1/chaos"
+	url := c.config.Endpoint + "/simianarmy/api/v1/chaos?since=0"
 
 	var resp []apiResponse
 	if err := c.sendRequest("GET", url, nil, &resp); err != nil {
