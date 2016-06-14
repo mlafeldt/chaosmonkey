@@ -41,6 +41,12 @@ Use the tool to:
     chaosmonkey -endpoint http://chaosmonkey.example.com:8080
     ```
 
+* List available chaos strategies, which you may pass to `-strategy`:
+
+    ```bash
+    chaosmonkey -list-strategies
+    ```
+
 * List all auto scaling groups for a given AWS account, which you may then pass to `-group`:
 
     ```bash
@@ -50,10 +56,13 @@ Use the tool to:
     chaosmonkey -list-groups
     ```
 
-* List available chaos strategies, which you may pass to `-strategy`:
+* Wipe state of Chaos Monkey by deleting its SimpleDB domain (named `SIMIAN_ARMY` by default):
 
     ```bash
-    chaosmonkey -list-strategies
+    export AWS_ACCESS_KEY_ID=...
+    export AWS_SECRET_ACCESS_KEY=...
+    export AWS_REGION=...
+    chaosmonkey -wipe-state SIMIAN_ARMY
     ```
 
 As always, invoke `chaosmonkey -h` for a list of all available options.

@@ -13,6 +13,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
+	"github.com/aws/aws-sdk-go/service/simpledb"
 	"github.com/ryanuber/columnize"
 
 	chaosmonkey "github.com/mlafeldt/chaosmonkey/lib"
@@ -32,6 +33,7 @@ func main() {
 
 		listGroups     bool
 		listStrategies bool
+		wipeState      string
 		showVersion    bool
 	)
 
@@ -42,6 +44,7 @@ func main() {
 	flag.StringVar(&password, "password", "", "HTTP password")
 	flag.BoolVar(&listGroups, "list-groups", false, "List auto scaling groups")
 	flag.BoolVar(&listStrategies, "list-strategies", false, "List default chaos strategies")
+	flag.StringVar(&wipeState, "wipe-state", "", "Wipe Chaos Monkey state by deleting given SimpleDB domain")
 	flag.BoolVar(&showVersion, "version", false, "Show program version")
 	flag.Parse()
 
@@ -56,6 +59,11 @@ func main() {
 	case listStrategies:
 		for _, s := range chaosmonkey.Strategies {
 			fmt.Println(s)
+		}
+		return
+	case wipeState != "":
+		if err := deleteSimpleDBDomain(wipeState); err != nil {
+			abort("failed to wipe state: %s", err)
 		}
 		return
 	case showVersion:
@@ -104,6 +112,26 @@ func autoScalingGroups() ([]string, error) {
 	}
 	sort.Strings(groups)
 	return groups, nil
+}
+
+func deleteSimpleDBDomain(domainName string) error {
+	var domainExists bool
+	svc := simpledb.New(session.New())
+	err := svc.ListDomainsPages(nil, func(out *simpledb.ListDomainsOutput, last bool) bool {
+		for _, n := range out.DomainNames {
+			if aws.StringValue(n) == domainName {
+				domainExists = true
+			}
+		}
+		return !last
+	})
+	if !domainExists {
+		return fmt.Errorf("SimpleDB domain %q does not exist", domainName)
+	}
+	_, err = svc.DeleteDomain(&simpledb.DeleteDomainInput{
+		DomainName: aws.String(domainName),
+	})
+	return err
 }
 
 func printEvents(event ...chaosmonkey.Event) {
