@@ -6,13 +6,9 @@ import (
 	"net/http"
 	"os"
 	"runtime"
-	"sort"
 	"strings"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/ryanuber/columnize"
 
 	chaosmonkey "github.com/mlafeldt/chaosmonkey/lib"
@@ -32,6 +28,7 @@ func main() {
 
 		listGroups     bool
 		listStrategies bool
+		wipeState      string
 		showVersion    bool
 	)
 
@@ -42,6 +39,7 @@ func main() {
 	flag.StringVar(&password, "password", "", "HTTP password")
 	flag.BoolVar(&listGroups, "list-groups", false, "List auto scaling groups")
 	flag.BoolVar(&listStrategies, "list-strategies", false, "List default chaos strategies")
+	flag.StringVar(&wipeState, "wipe-state", "", "Wipe Chaos Monkey state by deleting given SimpleDB domain")
 	flag.BoolVar(&showVersion, "version", false, "Show program version")
 	flag.Parse()
 
@@ -56,6 +54,11 @@ func main() {
 	case listStrategies:
 		for _, s := range chaosmonkey.Strategies {
 			fmt.Println(s)
+		}
+		return
+	case wipeState != "":
+		if err := deleteSimpleDBDomain(wipeState); err != nil {
+			abort("failed to wipe state: %s", err)
 		}
 		return
 	case showVersion:
@@ -88,22 +91,6 @@ func main() {
 		}
 		printEvents(events...)
 	}
-}
-
-func autoScalingGroups() ([]string, error) {
-	var groups []string
-	svc := autoscaling.New(session.New())
-	err := svc.DescribeAutoScalingGroupsPages(nil, func(out *autoscaling.DescribeAutoScalingGroupsOutput, last bool) bool {
-		for _, g := range out.AutoScalingGroups {
-			groups = append(groups, aws.StringValue(g.AutoScalingGroupName))
-		}
-		return !last
-	})
-	if err != nil {
-		return nil, err
-	}
-	sort.Strings(groups)
-	return groups, nil
 }
 
 func printEvents(event ...chaosmonkey.Event) {
