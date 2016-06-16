@@ -39,6 +39,10 @@ func main() {
 	flag.BoolVar(&showVersion, "version", false, "Show program version")
 	flag.Parse()
 
+	if flag.NArg() > 0 {
+		abort("program expects no arguments, but %d given", flag.NArg())
+	}
+
 	switch {
 	case listGroups:
 		groups, err := autoScalingGroups()
