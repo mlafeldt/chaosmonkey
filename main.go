@@ -14,10 +14,6 @@ import (
 	chaosmonkey "github.com/mlafeldt/chaosmonkey/lib"
 )
 
-// Version is the current version of the chaosmonkey tool. A ".dev" suffix
-// denotes that the version is currently being developed.
-const Version = "v0.3.0"
-
 func main() {
 	var (
 		group    string
