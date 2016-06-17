@@ -11,7 +11,7 @@ install: make deps
 
 script:
   - make build
-  - ./build/chaosmonkey --version
+  - ./build/chaosmonkey_linux_amd64 --version
 
 branches:
   only:

@@ -13,9 +13,7 @@ deps:
 		github.com/ryanuber/columnize
 
 build: test lint
-	go build -o build/chaosmonkey
-
-xbuild: test lint
-	gox -os="darwin linux" -arch="amd64" -output="build/{{.Dir}}_{{.OS}}_{{.Arch}}"
+	GOOS=darwin GOARCH=amd64 go build -o build/chaosmonkey_darwin_amd64
+	GOOS=linux  GOARCH=amd64 go build -o build/chaosmonkey_linux_amd64
 
 .PHONY: build
