@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"net/http"
 	"os"
@@ -10,67 +9,64 @@ import (
 	"time"
 
 	"github.com/ryanuber/columnize"
+	flag "github.com/spf13/pflag"
+	"github.com/spf13/viper"
 
 	chaosmonkey "github.com/mlafeldt/chaosmonkey/lib"
 )
 
 func main() {
 	var (
-		group    string
-		strategy string
-		endpoint string
-		username string
-		password string
-
-		listGroups     bool
-		listStrategies bool
-		wipeState      string
-		showVersion    bool
+		group          = flag.String("group", "", "Name of auto scaling group")
+		strategy       = flag.String("strategy", "", "Chaos strategy to use")
+		_              = flag.String("endpoint", "", "HTTP endpoint")
+		_              = flag.String("username", "", "HTTP username")
+		_              = flag.String("password", "", "HTTP password")
+		listGroups     = flag.Bool("list-groups", false, "List auto scaling groups")
+		listStrategies = flag.Bool("list-strategies", false, "List default chaos strategies")
+		wipeState      = flag.String("wipe-state", "", "Wipe Chaos Monkey state by deleting given SimpleDB domain")
+		showVersion    = flag.Bool("version", false, "Show program version")
 	)
-
-	flag.StringVar(&group, "group", "", "Name of auto scaling group")
-	flag.StringVar(&strategy, "strategy", "", "Chaos strategy to use")
-	flag.StringVar(&endpoint, "endpoint", "", "HTTP endpoint")
-	flag.StringVar(&username, "username", "", "HTTP username")
-	flag.StringVar(&password, "password", "", "HTTP password")
-	flag.BoolVar(&listGroups, "list-groups", false, "List auto scaling groups")
-	flag.BoolVar(&listStrategies, "list-strategies", false, "List default chaos strategies")
-	flag.StringVar(&wipeState, "wipe-state", "", "Wipe Chaos Monkey state by deleting given SimpleDB domain")
-	flag.BoolVar(&showVersion, "version", false, "Show program version")
 	flag.Parse()
 
 	if flag.NArg() > 0 {
 		abort("program expects no arguments, but %d given", flag.NArg())
 	}
 
+	viper.AutomaticEnv()
+	viper.SetEnvPrefix("chaosmonkey")
+	viper.BindPFlag("endpoint", flag.Lookup("endpoint"))
+	viper.BindPFlag("username", flag.Lookup("username"))
+	viper.BindPFlag("password", flag.Lookup("password"))
+
 	switch {
-	case listGroups:
+	case *listGroups:
 		groups, err := autoScalingGroups()
 		if err != nil {
 			abort("failed to get auto scaling groups: %s", err)
 		}
 		fmt.Println(strings.Join(groups, "\n"))
 		return
-	case listStrategies:
+	case *listStrategies:
 		for _, s := range chaosmonkey.Strategies {
 			fmt.Println(s)
 		}
 		return
-	case wipeState != "":
-		if err := deleteSimpleDBDomain(wipeState); err != nil {
+	case *wipeState != "":
+		if err := deleteSimpleDBDomain(*wipeState); err != nil {
 			abort("failed to wipe state: %s", err)
 		}
 		return
-	case showVersion:
+	case *showVersion:
 		fmt.Printf("chaosmonkey %s %s/%s %s\n", Version,
 			runtime.GOOS, runtime.GOARCH, runtime.Version())
 		return
 	}
 
 	client, err := chaosmonkey.NewClient(&chaosmonkey.Config{
-		Endpoint:   endpoint,
-		Username:   username,
-		Password:   password,
+		Endpoint:   viper.GetString("endpoint"),
+		Username:   viper.GetString("username"),
+		Password:   viper.GetString("password"),
 		UserAgent:  fmt.Sprintf("chaosmonkey Go client %s", Version),
 		HTTPClient: &http.Client{Timeout: 10 * time.Second},
 	})
@@ -78,8 +74,8 @@ func main() {
 		abort("%s", err)
 	}
 
-	if group != "" {
-		event, err := client.TriggerEvent(group, chaosmonkey.Strategy(strategy))
+	if *group != "" {
+		event, err := client.TriggerEvent(*group, chaosmonkey.Strategy(*strategy))
 		if err != nil {
 			abort("%s", err)
 		}
