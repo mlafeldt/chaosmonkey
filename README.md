@@ -69,6 +69,12 @@ Use the tool to:
 
 As always, invoke `chaosmonkey -h` for a list of all available options.
 
+In addition to command-line options, the tool also understands these environment variables:
+
+* `CHAOSMONKEY_ENDPOINT` - the same as `-endpoint`
+* `CHAOSMONKEY_USERNAME` - the same as `-username`
+* `CHAOSMONKEY_PASSWORD` - the same as `-password`
+
 ## Use with Docker
 
 [This Docker image](https://github.com/mlafeldt/docker-simianarmy) allows you to deploy Chaos Monkey with a single command:
