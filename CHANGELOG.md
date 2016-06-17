@@ -1,3 +1,9 @@
+## v0.4.0 (unreleased)
+
+* cli: Allow configuring connection via environment variables
+  `CHAOSMONKEY_ENDPOINT`, `CHAOSMONKEY_USERNAME`, and `CHAOSMONKEY_PASSWORD`.
+* cli: Fail early if any arguments are passed to avoid confusion.
+
 ## v0.3.0 (2016-06-14)
 
 * lib: Fix `Events()` to return all chaos events.
