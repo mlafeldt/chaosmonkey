@@ -6,11 +6,8 @@ lint:
 	golint -set_exit_status ./...
 
 deps:
-	go get \
-		github.com/aws/aws-sdk-go/aws/... \
-		github.com/aws/aws-sdk-go/service/... \
-		github.com/golang/lint/golint \
-		github.com/ryanuber/columnize
+	go get -d -t ./...
+	go get github.com/golang/lint/golint
 
 build: test lint
 	GOOS=darwin GOARCH=amd64 go build -o build/chaosmonkey_darwin_amd64
