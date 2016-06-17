@@ -105,6 +105,11 @@ go get -u github.com/mlafeldt/chaosmonkey/lib
 
 For usage and examples, see the [Godoc documentation](https://godoc.org/github.com/mlafeldt/chaosmonkey/lib).
 
+## Further resources
+
+* [Talk: Chaos Monkey for Fun and Profit](https://mlafeldt.github.io/blog/chaos-monkey-for-fun-and-profit/)
+* [Article: A Little Story about Amazon ECS, systemd, and Chaos Monkey](https://medium.com/production-ready/a-little-story-about-amazon-ecs-systemd-and-chaos-monkey-8bc7d1b5778)
+
 ## Author
 
 This project is being developed by [Mathias Lafeldt](https://twitter.com/mlafeldt).
