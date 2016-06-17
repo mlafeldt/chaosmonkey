@@ -16,27 +16,17 @@ import (
 
 func main() {
 	var (
-		group    string
-		strategy string
-		endpoint string
-		username string
-		password string
+		group    = flag.String("group", "", "Name of auto scaling group")
+		strategy = flag.String("strategy", "", "Chaos strategy to use")
+		endpoint = flag.String("endpoint", "", "HTTP endpoint")
+		username = flag.String("username", "", "HTTP username")
+		password = flag.String("password", "", "HTTP password")
 
-		listGroups     bool
-		listStrategies bool
-		wipeState      string
-		showVersion    bool
+		listGroups     = flag.Bool("list-groups", false, "List auto scaling groups")
+		listStrategies = flag.Bool("list-strategies", false, "List default chaos strategies")
+		wipeState      = flag.String("wipe-state", "", "Wipe Chaos Monkey state by deleting given SimpleDB domain")
+		showVersion    = flag.Bool("version", false, "Show program version")
 	)
-
-	flag.StringVar(&group, "group", "", "Name of auto scaling group")
-	flag.StringVar(&strategy, "strategy", "", "Chaos strategy to use")
-	flag.StringVar(&endpoint, "endpoint", "", "HTTP endpoint")
-	flag.StringVar(&username, "username", "", "HTTP username")
-	flag.StringVar(&password, "password", "", "HTTP password")
-	flag.BoolVar(&listGroups, "list-groups", false, "List auto scaling groups")
-	flag.BoolVar(&listStrategies, "list-strategies", false, "List default chaos strategies")
-	flag.StringVar(&wipeState, "wipe-state", "", "Wipe Chaos Monkey state by deleting given SimpleDB domain")
-	flag.BoolVar(&showVersion, "version", false, "Show program version")
 	flag.Parse()
 
 	if flag.NArg() > 0 {
@@ -44,33 +34,33 @@ func main() {
 	}
 
 	switch {
-	case listGroups:
+	case *listGroups:
 		groups, err := autoScalingGroups()
 		if err != nil {
 			abort("failed to get auto scaling groups: %s", err)
 		}
 		fmt.Println(strings.Join(groups, "\n"))
 		return
-	case listStrategies:
+	case *listStrategies:
 		for _, s := range chaosmonkey.Strategies {
 			fmt.Println(s)
 		}
 		return
-	case wipeState != "":
-		if err := deleteSimpleDBDomain(wipeState); err != nil {
+	case *wipeState != "":
+		if err := deleteSimpleDBDomain(*wipeState); err != nil {
 			abort("failed to wipe state: %s", err)
 		}
 		return
-	case showVersion:
+	case *showVersion:
 		fmt.Printf("chaosmonkey %s %s/%s %s\n", Version,
 			runtime.GOOS, runtime.GOARCH, runtime.Version())
 		return
 	}
 
 	client, err := chaosmonkey.NewClient(&chaosmonkey.Config{
-		Endpoint:   endpoint,
-		Username:   username,
-		Password:   password,
+		Endpoint:   *endpoint,
+		Username:   *username,
+		Password:   *password,
 		UserAgent:  fmt.Sprintf("chaosmonkey Go client %s", Version),
 		HTTPClient: &http.Client{Timeout: 10 * time.Second},
 	})
@@ -78,8 +68,8 @@ func main() {
 		abort("%s", err)
 	}
 
-	if group != "" {
-		event, err := client.TriggerEvent(group, chaosmonkey.Strategy(strategy))
+	if *group != "" {
+		event, err := client.TriggerEvent(*group, chaosmonkey.Strategy(*strategy))
 		if err != nil {
 			abort("%s", err)
 		}
