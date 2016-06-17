@@ -65,6 +65,8 @@ Use the tool to:
     chaosmonkey -wipe-state SIMIAN_ARMY
     ```
 
+    Warning: Requires a restart of Chaos Monkey.
+
 As always, invoke `chaosmonkey -h` for a list of all available options.
 
 ## Use with Docker
