@@ -52,7 +52,7 @@ func main() {
 		return
 	case *listGroups:
 		if err := listAutoScalingGroups(); err != nil {
-			abort("%s", err)
+			abort("failed to list auto scaling groups: %s", err)
 		}
 		return
 	case *wipeState != "":
@@ -95,7 +95,7 @@ func main() {
 func listAutoScalingGroups() error {
 	groups, err := aws.AutoScalingGroups()
 	if err != nil {
-		return fmt.Errorf("failed to get auto scaling groups: %s", err)
+		return err
 	}
 	lines := []string{"AutoScalingGroupName|Instances|Desired|Min|Max"}
 	for _, g := range groups {
