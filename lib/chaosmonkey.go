@@ -76,7 +76,7 @@ type apiResponse struct {
 
 // Config is used to configure the creation of the client.
 type Config struct {
-	// Address of the Chaos Monkey API server
+	// Address and port of the Chaos Monkey API server
 	Endpoint string
 
 	// Optional username for HTTP Basic Authentication

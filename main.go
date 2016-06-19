@@ -16,15 +16,16 @@ import (
 
 func main() {
 	var (
-		group    = flag.String("group", "", "Name of auto scaling group")
-		strategy = flag.String("strategy", "", "Chaos strategy to use")
-		endpoint = flag.String("endpoint", "", "HTTP endpoint")
-		username = flag.String("username", "", "HTTP username")
-		password = flag.String("password", "", "HTTP password")
+		endpoint = flag.String("endpoint", "", "Address and port of Chaos Monkey API server")
+		username = flag.String("username", "", "Username for HTTP basic authentication")
+		password = flag.String("password", "", "Password for HTTP basic authentication")
 
+		group    = flag.String("group", "", "Name of auto scaling group, see -list-groups")
+		strategy = flag.String("strategy", "", "Chaos strategy to use, see -list-strategies")
+
+		listStrategies = flag.Bool("list-strategies", false, "List chaos strategies")
 		listGroups     = flag.Bool("list-groups", false, "List auto scaling groups")
-		listStrategies = flag.Bool("list-strategies", false, "List default chaos strategies")
-		wipeState      = flag.String("wipe-state", "", "Wipe Chaos Monkey state by deleting given SimpleDB domain")
+		wipeState      = flag.String("wipe-state", "", "Wipe state of Chaos Monkey by deleting given SimpleDB domain")
 		showVersion    = flag.Bool("version", false, "Show program version")
 	)
 	flag.Parse()
@@ -44,14 +45,14 @@ func main() {
 	}
 
 	switch {
-	case *listGroups:
-		if err := listAutoScalingGroups(); err != nil {
-			abort("%s", err)
-		}
-		return
 	case *listStrategies:
 		for _, s := range chaosmonkey.Strategies {
 			fmt.Println(s)
+		}
+		return
+	case *listGroups:
+		if err := listAutoScalingGroups(); err != nil {
+			abort("%s", err)
 		}
 		return
 	case *wipeState != "":
