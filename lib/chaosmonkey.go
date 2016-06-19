@@ -6,7 +6,7 @@ The client can be used to trigger chaos events, thereby causing Chaos Monkey to
 failures:
 
 	client, err := chaosmonkey.NewClient(&chaosmonkey.Config{
-		Endpoint: "http://chaosmonkey.example.com:8080",
+		Endpoint: "http://example.com:8080",
 	})
 	if err != nil {
 		// handle error

@@ -31,14 +31,15 @@ Use the tool to:
 * Trigger a new chaos event:
 
     ```bash
-    chaosmonkey -endpoint http://chaosmonkey.example.com:8080 \
-        -strategy ShutdownInstance -group ExampleAutoScalingGroup
+    $ chaosmonkey -endpoint http://example.com:8080 \
+        -group ExampleAutoScalingGroup \
+        -strategy ShutdownInstance
     ```
 
 * Get a list of past chaos events:
 
     ```bash
-    chaosmonkey -endpoint http://chaosmonkey.example.com:8080
+    chaosmonkey -endpoint http://example.com:8080
     ```
 
 * List available chaos strategies, which you may pass to `-strategy`:
