@@ -10,6 +10,7 @@ import (
 
 	"github.com/ryanuber/columnize"
 
+	"github.com/mlafeldt/chaosmonkey/aws"
 	chaosmonkey "github.com/mlafeldt/chaosmonkey/lib"
 )
 
@@ -54,7 +55,7 @@ func main() {
 		}
 		return
 	case *wipeState != "":
-		if err := deleteSimpleDBDomain(*wipeState); err != nil {
+		if err := aws.DeleteSimpleDBDomain(*wipeState); err != nil {
 			abort("failed to wipe state: %s", err)
 		}
 		return
@@ -91,7 +92,7 @@ func main() {
 }
 
 func listAutoScalingGroups() error {
-	groups, err := autoScalingGroups()
+	groups, err := aws.AutoScalingGroups()
 	if err != nil {
 		return fmt.Errorf("failed to get auto scaling groups: %s", err)
 	}

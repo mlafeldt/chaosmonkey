@@ -1,4 +1,6 @@
-package main
+// Package aws provides access to Amazon Web Services (AWS).
+// AWS credentials need to be passed via environment variables.
+package aws
 
 import (
 	"fmt"
@@ -18,7 +20,8 @@ type AutoScalingGroup struct {
 	MaxSize         int
 }
 
-func autoScalingGroups() ([]AutoScalingGroup, error) {
+// AutoScalingGroups returns a list of all auto scaling groups.
+func AutoScalingGroups() ([]AutoScalingGroup, error) {
 	var groups []AutoScalingGroup
 	svc := autoscaling.New(session.New())
 	err := svc.DescribeAutoScalingGroupsPages(nil, func(out *autoscaling.DescribeAutoScalingGroupsOutput, last bool) bool {
@@ -39,7 +42,8 @@ func autoScalingGroups() ([]AutoScalingGroup, error) {
 	return groups, nil
 }
 
-func deleteSimpleDBDomain(domainName string) error {
+// DeleteSimpleDBDomain deletes an existing SimpleDB domain.
+func DeleteSimpleDBDomain(domainName string) error {
 	var domainExists bool
 	svc := simpledb.New(session.New())
 	err := svc.ListDomainsPages(nil, func(out *simpledb.ListDomainsOutput, last bool) bool {
