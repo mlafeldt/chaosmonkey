@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 	"runtime"
-	"strings"
 	"time"
 
 	"github.com/ryanuber/columnize"
@@ -45,11 +44,9 @@ func main() {
 
 	switch {
 	case *listGroups:
-		groups, err := autoScalingGroups()
-		if err != nil {
-			abort("failed to get auto scaling groups: %s", err)
+		if err := listAutoScalingGroups(); err != nil {
+			abort("%s", err)
 		}
-		fmt.Println(strings.Join(groups, "\n"))
 		return
 	case *listStrategies:
 		for _, s := range chaosmonkey.Strategies {
@@ -91,6 +88,25 @@ func main() {
 		}
 		printEvents(events...)
 	}
+}
+
+func listAutoScalingGroups() error {
+	groups, err := autoScalingGroups()
+	if err != nil {
+		return fmt.Errorf("failed to get auto scaling groups: %s", err)
+	}
+	lines := []string{"AutoScalingGroupName|Instances|Desired|Min|Max"}
+	for _, g := range groups {
+		lines = append(lines, fmt.Sprintf("%s|%d|%d|%d|%d",
+			g.Name,
+			g.CurrentSize,
+			g.DesiredCapacity,
+			g.MinSize,
+			g.MaxSize,
+		))
+	}
+	fmt.Println(columnize.SimpleFormat(lines))
+	return nil
 }
 
 func printEvents(event ...chaosmonkey.Event) {

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"sort"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -10,19 +9,33 @@ import (
 	"github.com/aws/aws-sdk-go/service/simpledb"
 )
 
-func autoScalingGroups() ([]string, error) {
-	var groups []string
+// AutoScalingGroup describes an AWS auto scaling group.
+type AutoScalingGroup struct {
+	Name            string
+	CurrentSize     int
+	DesiredCapacity int
+	MinSize         int
+	MaxSize         int
+}
+
+func autoScalingGroups() ([]AutoScalingGroup, error) {
+	var groups []AutoScalingGroup
 	svc := autoscaling.New(session.New())
 	err := svc.DescribeAutoScalingGroupsPages(nil, func(out *autoscaling.DescribeAutoScalingGroupsOutput, last bool) bool {
 		for _, g := range out.AutoScalingGroups {
-			groups = append(groups, aws.StringValue(g.AutoScalingGroupName))
+			groups = append(groups, AutoScalingGroup{
+				Name:            aws.StringValue(g.AutoScalingGroupName),
+				CurrentSize:     len(g.Instances),
+				DesiredCapacity: int(aws.Int64Value(g.DesiredCapacity)),
+				MinSize:         int(aws.Int64Value(g.MinSize)),
+				MaxSize:         int(aws.Int64Value(g.MaxSize)),
+			})
 		}
 		return !last
 	})
 	if err != nil {
 		return nil, err
 	}
-	sort.Strings(groups)
 	return groups, nil
 }
 
