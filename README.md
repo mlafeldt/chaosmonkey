@@ -25,8 +25,8 @@ simianarmy.chaos.terminateOndemand.enabled = true
 If you're on Mac OS X, the easiest way to get the `chaosmonkey` command-line tool is via Homebrew:
 
 ```bash
-$ brew tap mlafeldt/formulas
-$ brew install chaosmonkey
+brew tap mlafeldt/formulas
+brew install chaosmonkey
 ```
 
 You can also build the tool from source, provided you have Go installed:
@@ -42,9 +42,7 @@ Use the tool to:
 * Trigger a new chaos event:
 
     ```bash
-    $ chaosmonkey -endpoint http://example.com:8080 \
-        -group ExampleAutoScalingGroup \
-        -strategy ShutdownInstance
+    chaosmonkey -endpoint http://example.com:8080 -group ExampleAutoScalingGroup -strategy ShutdownInstance
     ```
 
 * Get a list of past chaos events:
