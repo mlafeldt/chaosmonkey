@@ -2,9 +2,10 @@
 
 * cli: Allow configuring connection via environment variables `CHAOSMONKEY_ENDPOINT`, `CHAOSMONKEY_USERNAME`, and `CHAOSMONKEY_PASSWORD`.
 * cli: Enhance `-list-groups` to also output current/desired/min/max size of auto scaling groups.
-* cli: Cross-compile Darwin and Linux binaries.
 * cli: Fail early if any arguments are passed to avoid confusion.
 * cli: Improve help output.
+* cli: Cross-compile Darwin and Linux binaries.
+* cli: Add ability to install the `chaosmonkey` tool using Homebrew.
 
 ## v0.3.0 (2016-06-14)
 

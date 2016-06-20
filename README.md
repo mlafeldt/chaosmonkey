@@ -20,11 +20,22 @@ simianarmy.chaos.terminateOndemand.enabled = true
 
 ## CLI
 
-You can install the `chaosmonkey` command-line tool this way:
+### Installation
+
+If you're on Mac OS X, the easiest way to get the `chaosmonkey` command-line tool is via Homebrew:
+
+```bash
+$ brew tap mlafeldt/formulas
+$ brew install chaosmonkey
+```
+
+You can also build the tool from source, provided you have Go installed:
 
 ```bash
 go get -u github.com/mlafeldt/chaosmonkey
 ```
+
+### Usage
 
 Use the tool to:
 
@@ -76,7 +87,7 @@ In addition to command-line options, the tool also understands these environment
 * `CHAOSMONKEY_USERNAME` - the same as `-username`
 * `CHAOSMONKEY_PASSWORD` - the same as `-password`
 
-## Use with Docker
+### Use with Docker
 
 [This Docker image](https://github.com/mlafeldt/docker-simianarmy) allows you to deploy Chaos Monkey with a single command:
 
