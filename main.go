@@ -101,7 +101,7 @@ func listAutoScalingGroups() error {
 	for _, g := range groups {
 		lines = append(lines, fmt.Sprintf("%s|%d|%d|%d|%d",
 			g.Name,
-			g.CurrentSize,
+			g.InstancesInService,
 			g.DesiredCapacity,
 			g.MinSize,
 			g.MaxSize,

@@ -13,11 +13,11 @@ import (
 
 // AutoScalingGroup describes an AWS auto scaling group.
 type AutoScalingGroup struct {
-	Name            string
-	CurrentSize     int
-	DesiredCapacity int
-	MinSize         int
-	MaxSize         int
+	Name               string
+	InstancesInService int
+	DesiredCapacity    int
+	MinSize            int
+	MaxSize            int
 }
 
 // AutoScalingGroups returns a list of all auto scaling groups.
@@ -26,12 +26,18 @@ func AutoScalingGroups() ([]AutoScalingGroup, error) {
 	svc := autoscaling.New(session.New())
 	err := svc.DescribeAutoScalingGroupsPages(nil, func(out *autoscaling.DescribeAutoScalingGroupsOutput, last bool) bool {
 		for _, g := range out.AutoScalingGroups {
+			inService := 0
+			for _, i := range g.Instances {
+				if aws.StringValue(i.LifecycleState) == autoscaling.LifecycleStateInService {
+					inService++
+				}
+			}
 			groups = append(groups, AutoScalingGroup{
-				Name:            aws.StringValue(g.AutoScalingGroupName),
-				CurrentSize:     len(g.Instances),
-				DesiredCapacity: int(aws.Int64Value(g.DesiredCapacity)),
-				MinSize:         int(aws.Int64Value(g.MinSize)),
-				MaxSize:         int(aws.Int64Value(g.MaxSize)),
+				Name:               aws.StringValue(g.AutoScalingGroupName),
+				InstancesInService: inService,
+				DesiredCapacity:    int(aws.Int64Value(g.DesiredCapacity)),
+				MinSize:            int(aws.Int64Value(g.MinSize)),
+				MaxSize:            int(aws.Int64Value(g.MaxSize)),
 			})
 		}
 		return !last
