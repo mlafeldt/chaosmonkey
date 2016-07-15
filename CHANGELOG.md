@@ -1,4 +1,4 @@
-## v0.4.0 (unreleased)
+## v0.4.0 (2016-07-15)
 
 * cli: Allow configuring connection via environment variables `CHAOSMONKEY_ENDPOINT`, `CHAOSMONKEY_USERNAME`, and `CHAOSMONKEY_PASSWORD`.
 * cli: Enhance `-list-groups` to also output current/desired/min/max size of auto scaling groups.
