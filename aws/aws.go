@@ -4,6 +4,8 @@ package aws
 
 import (
 	"fmt"
+	"net/http"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -23,7 +25,7 @@ type AutoScalingGroup struct {
 // AutoScalingGroups returns a list of all auto scaling groups.
 func AutoScalingGroups() ([]AutoScalingGroup, error) {
 	var groups []AutoScalingGroup
-	svc := autoscaling.New(session.New())
+	svc := autoscaling.New(sessionWithTimeout(10 * time.Second))
 	err := svc.DescribeAutoScalingGroupsPages(nil, func(out *autoscaling.DescribeAutoScalingGroupsOutput, last bool) bool {
 		for _, g := range out.AutoScalingGroups {
 			inService := 0
@@ -51,7 +53,7 @@ func AutoScalingGroups() ([]AutoScalingGroup, error) {
 // DeleteSimpleDBDomain deletes an existing SimpleDB domain.
 func DeleteSimpleDBDomain(domainName string) error {
 	var domainExists bool
-	svc := simpledb.New(session.New())
+	svc := simpledb.New(sessionWithTimeout(10 * time.Second))
 	err := svc.ListDomainsPages(nil, func(out *simpledb.ListDomainsOutput, last bool) bool {
 		for _, n := range out.DomainNames {
 			if aws.StringValue(n) == domainName {
@@ -67,4 +69,8 @@ func DeleteSimpleDBDomain(domainName string) error {
 		DomainName: aws.String(domainName),
 	})
 	return err
+}
+
+func sessionWithTimeout(timeout time.Duration) *session.Session {
+	return session.New(aws.NewConfig().WithHTTPClient(&http.Client{Timeout: timeout}))
 }

@@ -1,3 +1,7 @@
+## v0.5.0 (unreleased)
+
+* Set timeout of 10 seconds on AWS operations.
+
 ## v0.4.0 (2016-07-15)
 
 * cli: Allow configuring connection via environment variables `CHAOSMONKEY_ENDPOINT`, `CHAOSMONKEY_USERNAME`, and `CHAOSMONKEY_PASSWORD`.
