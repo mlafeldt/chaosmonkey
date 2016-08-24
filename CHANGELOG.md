@@ -1,6 +1,7 @@
 ## v0.5.0 (unreleased)
 
 * Set timeout of 10 seconds on AWS operations.
+* Build with Go 1.7.
 
 ## v0.4.0 (2016-07-15)
 
