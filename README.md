@@ -42,10 +42,19 @@ Use the tool to:
 * Trigger a new chaos event:
 
     ```bash
-    chaosmonkey -endpoint http://example.com:8080 -group ExampleAutoScalingGroup -strategy ShutdownInstance
+    chaosmonkey -endpoint http://example.com:8080 \
+        -group ExampleAutoScalingGroup -strategy ShutdownInstance
     ```
 
-    Tip: Use `-count` to trigger the same event multiple times and terminate more than one EC2 instance.
+* Trigger the same event 5 times at intervals of 10 seconds with a probability of 20%:
+
+    ```bash
+    chaosmonkey -endpoint http://example.com:8080 \
+        -group ExampleAutoScalingGroup -strategy ShutdownInstance \
+        -count 5 -interval 10s -probability 0.2
+    ```
+
+    This is useful to terminate more than one EC2 instance of an auto scaling group.
 
 * Get a list of past chaos events:
 
