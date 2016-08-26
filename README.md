@@ -45,7 +45,7 @@ Use the tool to:
     chaosmonkey -endpoint http://example.com:8080 -group ExampleAutoScalingGroup -strategy ShutdownInstance
     ```
 
-    Tip: Use `-repeat` and `-repeat-interval` to trigger the same event multiple times.
+    Tip: Use `-count` to trigger the same event multiple times and terminate more than one EC2 instance.
 
 * Get a list of past chaos events:
 

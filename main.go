@@ -23,8 +23,8 @@ func main() {
 		group    = flag.String("group", "", "Name of auto scaling group, see -list-groups")
 		strategy = flag.String("strategy", "", "Chaos strategy to use, see -list-strategies")
 
-		repeat         = flag.Int("repeat", 1, "Number of times to trigger chaos event")
-		repeatInterval = flag.Duration("repeat-interval", 10*time.Second, "Time to wait between chaos events")
+		count    = flag.Int("count", 1, "Number of times to trigger chaos event")
+		interval = flag.Duration("interval", 5*time.Second, "Time to wait between chaos events")
 
 		listStrategies = flag.Bool("list-strategies", false, "List chaos strategies")
 		listGroups     = flag.Bool("list-groups", false, "List auto scaling groups")
@@ -81,14 +81,14 @@ func main() {
 	}
 
 	if *group != "" {
-		for i := 1; i <= *repeat; i++ {
+		for i := 1; i <= *count; i++ {
 			event, err := client.TriggerEvent(*group, chaosmonkey.Strategy(*strategy))
 			if err != nil {
 				abort("%s", err)
 			}
 			printEvents(*event)
-			if i < *repeat {
-				time.Sleep(*repeatInterval)
+			if i < *count {
+				time.Sleep(*interval)
 			}
 		}
 	} else {
