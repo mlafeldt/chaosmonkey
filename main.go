@@ -23,6 +23,9 @@ func main() {
 		group    = flag.String("group", "", "Name of auto scaling group, see -list-groups")
 		strategy = flag.String("strategy", "", "Chaos strategy to use, see -list-strategies")
 
+		repeat         = flag.Int("repeat", 1, "Number of times to trigger chaos event")
+		repeatInterval = flag.Duration("repeat-interval", 10*time.Second, "Time to wait between chaos events")
+
 		listStrategies = flag.Bool("list-strategies", false, "List chaos strategies")
 		listGroups     = flag.Bool("list-groups", false, "List auto scaling groups")
 		wipeState      = flag.String("wipe-state", "", "Wipe state of Chaos Monkey by deleting given SimpleDB domain")
@@ -78,11 +81,16 @@ func main() {
 	}
 
 	if *group != "" {
-		event, err := client.TriggerEvent(*group, chaosmonkey.Strategy(*strategy))
-		if err != nil {
-			abort("%s", err)
+		for i := 1; i <= *repeat; i++ {
+			event, err := client.TriggerEvent(*group, chaosmonkey.Strategy(*strategy))
+			if err != nil {
+				abort("%s", err)
+			}
+			printEvents(*event)
+			if i < *repeat {
+				time.Sleep(*repeatInterval)
+			}
 		}
-		printEvents(*event)
 	} else {
 		events, err := client.Events()
 		if err != nil {
@@ -111,8 +119,14 @@ func listAutoScalingGroups() error {
 	return nil
 }
 
+var addHeader = true
+
 func printEvents(event ...chaosmonkey.Event) {
-	lines := []string{"InstanceID|AutoScalingGroupName|Region|Strategy|TriggeredAt"}
+	var lines []string
+	if addHeader {
+		lines = append(lines, "InstanceID|AutoScalingGroupName|Region|Strategy|TriggeredAt")
+		addHeader = false
+	}
 	for _, e := range event {
 		lines = append(lines, fmt.Sprintf("%s|%s|%s|%s|%s",
 			e.InstanceID,

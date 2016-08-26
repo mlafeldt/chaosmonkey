@@ -1,7 +1,10 @@
 ## v0.5.0 (unreleased)
 
-* Set timeout of 10 seconds on AWS operations.
-* Build with Go 1.7.
+* cli: Allow to repeat the same chaos event with `-repeat` in order to terminate
+  multiple EC2 instances of an auto scaling group. Use `-repeat-interval` to
+  configure the time to wait before triggering the next event.
+* cli: Set timeout of 10 seconds on AWS operations.
+* Build project with Go 1.7.
 
 ## v0.4.0 (2016-07-15)
 

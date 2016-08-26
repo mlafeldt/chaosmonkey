@@ -45,6 +45,8 @@ Use the tool to:
     chaosmonkey -endpoint http://example.com:8080 -group ExampleAutoScalingGroup -strategy ShutdownInstance
     ```
 
+    Tip: Use `-repeat` and `-repeat-interval` to trigger the same event multiple times.
+
 * Get a list of past chaos events:
 
     ```bash
