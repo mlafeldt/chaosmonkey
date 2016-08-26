@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"os"
 	"runtime"
@@ -23,8 +24,9 @@ func main() {
 		group    = flag.String("group", "", "Name of auto scaling group, see -list-groups")
 		strategy = flag.String("strategy", "", "Chaos strategy to use, see -list-strategies")
 
-		count    = flag.Int("count", 1, "Number of times to trigger chaos event")
-		interval = flag.Duration("interval", 5*time.Second, "Time to wait between chaos events")
+		count       = flag.Int("count", 1, "Number of times to trigger chaos event")
+		interval    = flag.Duration("interval", 5*time.Second, "Time to wait between chaos events")
+		probability = flag.Float64("probability", 1.0, "Probability of chaos events")
 
 		listStrategies = flag.Bool("list-strategies", false, "List chaos strategies")
 		listGroups     = flag.Bool("list-groups", false, "List auto scaling groups")
@@ -81,15 +83,24 @@ func main() {
 	}
 
 	if *group != "" {
+		rand.Seed(time.Now().UTC().UnixNano())
+		skipped := 0
 		for i := 1; i <= *count; i++ {
-			event, err := client.TriggerEvent(*group, chaosmonkey.Strategy(*strategy))
-			if err != nil {
-				abort("%s", err)
+			if rand.Float64() > *probability {
+				skipped++
+			} else {
+				event, err := client.TriggerEvent(*group, chaosmonkey.Strategy(*strategy))
+				if err != nil {
+					abort("%s", err)
+				}
+				printEvents(*event)
 			}
-			printEvents(*event)
 			if i < *count {
 				time.Sleep(*interval)
 			}
+		}
+		if skipped > 0 {
+			fmt.Fprintf(os.Stderr, "Skipped %d chaos event(s) with probability of %f\n", skipped, *probability)
 		}
 	} else {
 		events, err := client.Events()

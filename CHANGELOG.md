@@ -3,6 +3,7 @@
 * cli: Allow to repeat the same chaos event with `-count` in order to terminate
   multiple EC2 instances of an auto scaling group. Use `-interval` to configure
   the time to wait before triggering the next event.
+* cli: Allow to configure the probability of chaos events via `-probability`.
 * cli: Set timeout of 10 seconds on AWS operations.
 * Build project with Go 1.7.
 
