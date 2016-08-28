@@ -34,6 +34,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -92,6 +93,27 @@ type Config struct {
 	HTTPClient *http.Client
 }
 
+// DefaultConfig returns a default configuration for the client. It parses the
+// environment variables CHAOSMONKEY_ENDPOINT, CHAOSMONKEY_USERNAME, and
+// CHAOSMONKEY_PASSWORD.
+func DefaultConfig() *Config {
+	c := Config{
+		Endpoint:   "http://127.0.0.1:8080",
+		UserAgent:  "chaosmonkey Go library",
+		HTTPClient: http.DefaultClient,
+	}
+	if v := os.Getenv("CHAOSMONKEY_ENDPOINT"); v != "" {
+		c.Endpoint = v
+	}
+	if v := os.Getenv("CHAOSMONKEY_USERNAME"); v != "" {
+		c.Username = v
+	}
+	if v := os.Getenv("CHAOSMONKEY_PASSWORD"); v != "" {
+		c.Password = v
+	}
+	return &c
+}
+
 // Client is the client to the Chaos Monkey API. Create a client with NewClient.
 type Client struct {
 	config *Config
@@ -99,14 +121,21 @@ type Client struct {
 
 // NewClient returns a new client for the given configuration.
 func NewClient(c *Config) (*Client, error) {
+	defConfig := DefaultConfig()
 	if c.Endpoint == "" {
-		c.Endpoint = "http://127.0.0.1:8080"
+		c.Endpoint = defConfig.Endpoint
+	}
+	if c.Username == "" {
+		c.Username = defConfig.Username
+	}
+	if c.Password == "" {
+		c.Password = defConfig.Password
 	}
 	if c.UserAgent == "" {
-		c.UserAgent = "chaosmonkey Go library"
+		c.UserAgent = defConfig.UserAgent
 	}
 	if c.HTTPClient == nil {
-		c.HTTPClient = http.DefaultClient
+		c.HTTPClient = defConfig.HTTPClient
 	}
 	return &Client{config: c}, nil
 }

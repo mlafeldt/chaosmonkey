@@ -5,6 +5,8 @@
   the time to wait before triggering the next event.
 * cli: Allow to configure the probability of chaos events via `-probability`.
 * cli: Set timeout of 10 seconds on AWS operations.
+* lib: Move processing of environment variables from CLI to library. Added
+  `DefaultConfig()` for this purpose.
 * Build project with Go 1.7.
 
 ## v0.4.0 (2016-07-15)

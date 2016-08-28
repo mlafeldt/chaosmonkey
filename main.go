@@ -39,16 +39,6 @@ func main() {
 		abort("program expects no arguments, but %d given", flag.NArg())
 	}
 
-	if v := os.Getenv("CHAOSMONKEY_ENDPOINT"); v != "" && *endpoint == "" {
-		*endpoint = v
-	}
-	if v := os.Getenv("CHAOSMONKEY_USERNAME"); v != "" && *username == "" {
-		*username = v
-	}
-	if v := os.Getenv("CHAOSMONKEY_PASSWORD"); v != "" && *password == "" {
-		*password = v
-	}
-
 	switch {
 	case *listStrategies:
 		for _, s := range chaosmonkey.Strategies {
