@@ -46,7 +46,7 @@ Use the tool to:
         -group ExampleAutoScalingGroup -strategy ShutdownInstance
     ```
 
-* Trigger the same event 5 times at intervals of 10 seconds with a probability of 20%:
+* Trigger the same event 5 times at intervals of 10 seconds, with a probability of 20% per event:
 
     ```bash
     chaosmonkey -endpoint http://example.com:8080 \

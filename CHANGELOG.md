@@ -1,4 +1,4 @@
-## v0.5.0 (unreleased)
+## v0.5.0 (2016-08-28)
 
 * cli: Allow to repeat the same chaos event with `-count` in order to terminate
   multiple EC2 instances of an auto scaling group. Use `-interval` to configure
@@ -8,6 +8,7 @@
 * lib: Move processing of environment variables from CLI to library. Added
   `DefaultConfig()` for this purpose.
 * lib: Add `EventsSince()` to get all chaos events since a specific time.
+* lib: Add prefix to HTTP error messages.
 * Build project with Go 1.7.
 
 ## v0.4.0 (2016-07-15)
