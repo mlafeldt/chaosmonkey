@@ -164,9 +164,18 @@ func (c *Client) TriggerEvent(group string, strategy Strategy) (*Event, error) {
 	return makeEvent(&resp), nil
 }
 
-// Events returns a list of past chaos events.
+// Events returns a list of all chaos events.
 func (c *Client) Events() ([]Event, error) {
-	url := c.config.Endpoint + "/simianarmy/api/v1/chaos?since=0"
+	return c.events(0)
+}
+
+// EventsSince returns a list of all chaos events since a specific time.
+func (c *Client) EventsSince(t time.Time) ([]Event, error) {
+	return c.events(t.UTC().Unix() * 1000)
+}
+
+func (c *Client) events(since int64) ([]Event, error) {
+	url := fmt.Sprintf("%s/simianarmy/api/v1/chaos?since=%d", c.config.Endpoint, since)
 
 	var resp []apiResponse
 	if err := c.sendRequest("GET", url, nil, &resp); err != nil {

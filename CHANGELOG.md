@@ -7,6 +7,7 @@
 * cli: Set timeout of 10 seconds on AWS operations.
 * lib: Move processing of environment variables from CLI to library. Added
   `DefaultConfig()` for this purpose.
+* lib: Add `EventsSince()` to get all chaos events since a specific time.
 * Build project with Go 1.7.
 
 ## v0.4.0 (2016-07-15)
