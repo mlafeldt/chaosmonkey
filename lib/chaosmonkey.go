@@ -183,7 +183,7 @@ func decodeError(resp *http.Response) error {
 	if err := json.NewDecoder(resp.Body).Decode(&m); err == nil && m.Message != "" {
 		return fmt.Errorf("%s", m.Message)
 	}
-	return fmt.Errorf("%s", resp.Status)
+	return fmt.Errorf("HTTP error: %s", resp.Status)
 }
 
 func makeEvent(in *apiResponse) *Event {
