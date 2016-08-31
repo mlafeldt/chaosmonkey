@@ -2,23 +2,13 @@ language: go
 
 sudo: false
 
-go:
-  - 1.7
-  - tip
+go: 1.7
 
 install: make deps
 
 script:
   - make build
   - ./build/chaosmonkey_linux_amd64 --version
-
-branches:
-  only:
-    - master
-
-matrix:
-  allow_failures:
-    - go: tip
 
 deploy:
   provider: releases
