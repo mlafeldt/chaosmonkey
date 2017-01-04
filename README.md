@@ -18,6 +18,12 @@ simianarmy.chaos.leashed = false
 simianarmy.chaos.terminateOndemand.enabled = true
 ```
 
+If you plan to use the REST API only, you should also disable all scheduled terminations:
+
+```
+simianarmy.chaos.asg.enabled = false
+```
+
 ## CLI
 
 ### Installation
@@ -106,6 +112,7 @@ docker run -it --rm -p 8080:8080 \
     -e SIMIANARMY_CLIENT_AWS_SECRETKEY=$AWS_SECRET_ACCESS_KEY \
     -e SIMIANARMY_CLIENT_AWS_REGION=$AWS_REGION \
     -e SIMIANARMY_CHAOS_LEASHED=false \
+    -e SIMIANARMY_CHAOS_ASG_ENABLED=false \
     -e SIMIANARMY_CHAOS_TERMINATEONDEMAND_ENABLED=true \
     mlafeldt/simianarmy
 ```
