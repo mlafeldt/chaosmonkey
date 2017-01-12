@@ -135,8 +135,9 @@ For usage and examples, see the [Godoc documentation](https://godoc.org/github.c
 
 ## Further resources
 
-* [Talk: Chaos Monkey for Fun and Profit](https://mlafeldt.github.io/blog/chaos-monkey-for-fun-and-profit/)
+* [Article: Using Chaos Monkey whenever you feel like it](https://medium.com/production-ready/using-chaos-monkey-whenever-you-feel-like-it-e5fe31257a07#.vuftpxmm://medium.com/production-ready/using-chaos-monkey-whenever-you-feel-like-it-e5fe31257a07)
 * [Article: A Little Story about Amazon ECS, systemd, and Chaos Monkey](https://medium.com/production-ready/a-little-story-about-amazon-ecs-systemd-and-chaos-monkey-8bc7d1b5778)
+* [Talk: Chaos Monkey for Fun and Profit](https://mlafeldt.github.io/blog/chaos-monkey-for-fun-and-profit/)
 
 ## Author
 
