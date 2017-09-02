@@ -1,3 +1,9 @@
+## v0.5.1 (2017-09-02)
+
+* Suggest to disable scheduled terminations when using the REST API only.
+* Auto-deploy binaries and Homebrew formula when tagging a new release.
+* Build project with Go 1.9.
+
 ## v0.5.0 (2016-08-28)
 
 * cli: Allow to repeat the same chaos event with `-count` in order to terminate
