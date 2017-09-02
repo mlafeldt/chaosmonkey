@@ -16,6 +16,7 @@ deploy:
     - build/chaosmonkey_darwin_amd64
     - build/chaosmonkey_linux_amd64
     - build/SHA256SUMS
+    - build/chaosmonkey.rb
   skip_cleanup: true
   on:
     tags: true
