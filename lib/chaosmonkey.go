@@ -63,6 +63,17 @@ type APIResponse struct {
 	Region     string `json:"region"`
 }
 
+// ToEvent converts the APIResponse into an Event.
+func (resp *APIResponse) ToEvent() *Event {
+	return &Event{
+		InstanceID:           resp.EventID,
+		AutoScalingGroupName: resp.GroupName,
+		Region:               resp.Region,
+		Strategy:             Strategy(resp.ChaosType),
+		TriggeredAt:          time.Unix(resp.EventTime/1000, 0).UTC(),
+	}
+}
+
 // Event describes the termination of an EC2 instance by Chaos Monkey.
 type Event struct {
 	// ID of EC2 instance that was terminated
@@ -167,7 +178,7 @@ func (c *Client) TriggerEvent(group string, strategy Strategy) (*Event, error) {
 		return nil, err
 	}
 
-	return makeEvent(&resp), nil
+	return resp.ToEvent(), nil
 }
 
 // Events returns a list of all chaos events.
@@ -190,7 +201,7 @@ func (c *Client) events(since int64) ([]Event, error) {
 
 	var events []Event
 	for _, r := range resp {
-		events = append(events, *makeEvent(&r))
+		events = append(events, *r.ToEvent())
 	}
 
 	return events, nil
@@ -228,14 +239,4 @@ func decodeError(resp *http.Response) error {
 		return fmt.Errorf("%s", m.Message)
 	}
 	return fmt.Errorf("HTTP error: %s", resp.Status)
-}
-
-func makeEvent(in *APIResponse) *Event {
-	return &Event{
-		InstanceID:           in.EventID,
-		AutoScalingGroupName: in.GroupName,
-		Region:               in.Region,
-		Strategy:             Strategy(in.ChaosType),
-		TriggeredAt:          time.Unix(in.EventTime/1000, 0).UTC(),
-	}
 }
