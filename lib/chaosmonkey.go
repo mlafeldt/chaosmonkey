@@ -38,23 +38,10 @@ import (
 	"time"
 )
 
-// Event describes the termination of an EC2 instance by Chaos Monkey.
-type Event struct {
-	// ID of EC2 instance that was terminated
-	InstanceID string
-
-	// Name of auto scaling group containing the terminated instance
-	AutoScalingGroupName string
-
-	// AWS region of the instance and its auto scaling group
-	Region string
-
-	// Chaos strategy used to terminate the instance
-	Strategy Strategy
-
-	// Time when the chaos event was triggered
-	TriggeredAt time.Time
-}
+// API constants
+const (
+	APIPath = "/simianarmy/api/v1/chaos"
+)
 
 type apiRequest struct {
 	ChaosType string `json:"chaosType,omitempty"`
@@ -72,6 +59,24 @@ type apiResponse struct {
 	GroupType  string `json:"groupType"`
 	MonkeyType string `json:"monkeyType"`
 	Region     string `json:"region"`
+}
+
+// Event describes the termination of an EC2 instance by Chaos Monkey.
+type Event struct {
+	// ID of EC2 instance that was terminated
+	InstanceID string
+
+	// Name of auto scaling group containing the terminated instance
+	AutoScalingGroupName string
+
+	// AWS region of the instance and its auto scaling group
+	Region string
+
+	// Chaos strategy used to terminate the instance
+	Strategy Strategy
+
+	// Time when the chaos event was triggered
+	TriggeredAt time.Time
 }
 
 // Config is used to configure the creation of the client.
@@ -143,7 +148,7 @@ func NewClient(c *Config) (*Client, error) {
 // "break" an EC2 instance in the given auto scaling group using the specified
 // chaos strategy.
 func (c *Client) TriggerEvent(group string, strategy Strategy) (*Event, error) {
-	url := c.config.Endpoint + "/simianarmy/api/v1/chaos"
+	url := c.config.Endpoint + APIPath
 
 	body, err := json.Marshal(apiRequest{
 		EventType: "CHAOS_TERMINATION",
@@ -174,7 +179,7 @@ func (c *Client) EventsSince(t time.Time) ([]Event, error) {
 }
 
 func (c *Client) events(since int64) ([]Event, error) {
-	url := fmt.Sprintf("%s/simianarmy/api/v1/chaos?since=%d", c.config.Endpoint, since)
+	url := fmt.Sprintf("%s%s?since=%d", c.config.Endpoint, APIPath, since)
 
 	var resp []apiResponse
 	if err := c.sendRequest("GET", url, nil, &resp); err != nil {

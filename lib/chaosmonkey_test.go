@@ -56,7 +56,7 @@ func TestMain(m *testing.M) {
 
 	// Test server faking Chaos Monkey REST API
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == "/simianarmy/api/v1/chaos" {
+		if r.URL.Path == chaosmonkey.APIPath {
 			switch r.Method {
 			case "POST":
 				fmt.Fprint(w, newEvent)
