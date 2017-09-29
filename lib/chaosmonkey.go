@@ -38,9 +38,6 @@ import (
 	"time"
 )
 
-// Strategy defines a chaos strategy for terminating EC2 instances.
-type Strategy string
-
 // Event describes the termination of an EC2 instance by Chaos Monkey.
 type Event struct {
 	// ID of EC2 instance that was terminated
