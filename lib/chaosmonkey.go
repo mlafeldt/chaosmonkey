@@ -57,18 +57,20 @@ type Event struct {
 }
 
 type apiRequest struct {
-	EventType string `json:"eventType"`
-	GroupType string `json:"groupType"`
-	GroupName string `json:"groupName"`
 	ChaosType string `json:"chaosType,omitempty"`
+	EventType string `json:"eventType"`
+	GroupName string `json:"groupName"`
+	GroupType string `json:"groupType"`
 }
 
 type apiResponse struct {
-	*apiRequest
-
-	MonkeyType string `json:"monkeyType"`
+	ChaosType  string `json:"chaosType,omitempty"`
 	EventID    string `json:"eventId"`
 	EventTime  int64  `json:"eventTime"`
+	EventType  string `json:"eventType"`
+	GroupName  string `json:"groupName"`
+	GroupType  string `json:"groupType"`
+	MonkeyType string `json:"monkeyType"`
 	Region     string `json:"region"`
 }
 
