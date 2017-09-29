@@ -43,14 +43,16 @@ const (
 	APIPath = "/simianarmy/api/v1/chaos"
 )
 
-type apiRequest struct {
+// APIRequest describes a request sent to the API.
+type APIRequest struct {
 	ChaosType string `json:"chaosType,omitempty"`
 	EventType string `json:"eventType"`
 	GroupName string `json:"groupName"`
 	GroupType string `json:"groupType"`
 }
 
-type apiResponse struct {
+// APIResponse describes a response returned by the API.
+type APIResponse struct {
 	ChaosType  string `json:"chaosType,omitempty"`
 	EventID    string `json:"eventId"`
 	EventTime  int64  `json:"eventTime"`
@@ -150,7 +152,7 @@ func NewClient(c *Config) (*Client, error) {
 func (c *Client) TriggerEvent(group string, strategy Strategy) (*Event, error) {
 	url := c.config.Endpoint + APIPath
 
-	body, err := json.Marshal(apiRequest{
+	body, err := json.Marshal(APIRequest{
 		EventType: "CHAOS_TERMINATION",
 		GroupType: "ASG",
 		GroupName: group,
@@ -160,7 +162,7 @@ func (c *Client) TriggerEvent(group string, strategy Strategy) (*Event, error) {
 		return nil, err
 	}
 
-	var resp apiResponse
+	var resp APIResponse
 	if err := c.sendRequest("POST", url, bytes.NewReader(body), &resp); err != nil {
 		return nil, err
 	}
@@ -181,7 +183,7 @@ func (c *Client) EventsSince(t time.Time) ([]Event, error) {
 func (c *Client) events(since int64) ([]Event, error) {
 	url := fmt.Sprintf("%s%s?since=%d", c.config.Endpoint, APIPath, since)
 
-	var resp []apiResponse
+	var resp []APIResponse
 	if err := c.sendRequest("GET", url, nil, &resp); err != nil {
 		return nil, err
 	}
@@ -228,7 +230,7 @@ func decodeError(resp *http.Response) error {
 	return fmt.Errorf("HTTP error: %s", resp.Status)
 }
 
-func makeEvent(in *apiResponse) *Event {
+func makeEvent(in *APIResponse) *Event {
 	return &Event{
 		InstanceID:           in.EventID,
 		AutoScalingGroupName: in.GroupName,
