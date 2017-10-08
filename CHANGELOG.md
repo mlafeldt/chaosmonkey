@@ -1,3 +1,10 @@
+## v0.5.2 (2017-10-08)
+
+* lib: Expose `APIPath`, `APIRequest`, `APIResponse`, and `ToEvent`.
+* lib: Add HTTP protocol to endpoint if missing.
+* lib: Typed `Strategy` constants.
+* Link to more recent talk in README.
+
 ## v0.5.1 (2017-09-02)
 
 * Suggest to disable scheduled terminations when using the REST API only.
