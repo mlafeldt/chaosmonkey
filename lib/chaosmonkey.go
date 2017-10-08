@@ -35,6 +35,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -141,6 +142,9 @@ func NewClient(c *Config) (*Client, error) {
 	defConfig := DefaultConfig()
 	if c.Endpoint == "" {
 		c.Endpoint = defConfig.Endpoint
+	}
+	if !strings.HasPrefix(c.Endpoint, "http") {
+		c.Endpoint = "http://" + c.Endpoint
 	}
 	if c.Username == "" {
 		c.Username = defConfig.Username
