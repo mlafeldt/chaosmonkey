@@ -50,6 +50,7 @@ type APIRequest struct {
 	EventType string `json:"eventType"`
 	GroupName string `json:"groupName"`
 	GroupType string `json:"groupType"`
+	Region    string `json:"region,omitempty"` // Ignored by Chaos Monkey
 }
 
 // APIResponse describes a response returned by the API.
@@ -97,6 +98,9 @@ type Event struct {
 type Config struct {
 	// Address and port of the Chaos Monkey API server
 	Endpoint string
+
+	// Optional AWS region (ignored by Chaos Monkey)
+	Region string
 
 	// Optional username for HTTP Basic Authentication
 	Username string
@@ -172,6 +176,7 @@ func (c *Client) TriggerEvent(group string, strategy Strategy) (*Event, error) {
 		GroupType: "ASG",
 		GroupName: group,
 		ChaosType: string(strategy),
+		Region:    c.config.Region,
 	})
 	if err != nil {
 		return nil, err
