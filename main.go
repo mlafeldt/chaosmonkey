@@ -18,6 +18,7 @@ import (
 func main() {
 	var (
 		endpoint = flag.String("endpoint", "", "Address and port of Chaos Monkey API server")
+		region   = flag.String("region", "", "Name of AWS region (ignored by Chaos Monkey)")
 		username = flag.String("username", "", "Username for HTTP basic authentication")
 		password = flag.String("password", "", "Password for HTTP basic authentication")
 
@@ -46,12 +47,12 @@ func main() {
 		}
 		return
 	case *listGroups:
-		if err := listAutoScalingGroups(); err != nil {
+		if err := listAutoScalingGroups(*region); err != nil {
 			abort("failed to list auto scaling groups: %s", err)
 		}
 		return
 	case *wipeState != "":
-		if err := aws.DeleteSimpleDBDomain(*wipeState); err != nil {
+		if err := aws.DeleteSimpleDBDomain(*wipeState, *region); err != nil {
 			abort("failed to wipe state: %s", err)
 		}
 		return
@@ -63,6 +64,7 @@ func main() {
 
 	client, err := chaosmonkey.NewClient(&chaosmonkey.Config{
 		Endpoint:   *endpoint,
+		Region:     *region,
 		Username:   *username,
 		Password:   *password,
 		UserAgent:  fmt.Sprintf("chaosmonkey Go client %s", Version),
@@ -101,8 +103,8 @@ func main() {
 	}
 }
 
-func listAutoScalingGroups() error {
-	groups, err := aws.AutoScalingGroups()
+func listAutoScalingGroups(region string) error {
+	groups, err := aws.AutoScalingGroups(region)
 	if err != nil {
 		return err
 	}

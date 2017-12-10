@@ -23,9 +23,9 @@ type AutoScalingGroup struct {
 }
 
 // AutoScalingGroups returns a list of all auto scaling groups.
-func AutoScalingGroups() ([]AutoScalingGroup, error) {
+func AutoScalingGroups(region string) ([]AutoScalingGroup, error) {
 	var groups []AutoScalingGroup
-	svc := autoscaling.New(sessionWithTimeout(10 * time.Second))
+	svc := autoscaling.New(newSession(region))
 	err := svc.DescribeAutoScalingGroupsPages(nil, func(out *autoscaling.DescribeAutoScalingGroupsOutput, last bool) bool {
 		for _, g := range out.AutoScalingGroups {
 			inService := 0
@@ -51,9 +51,9 @@ func AutoScalingGroups() ([]AutoScalingGroup, error) {
 }
 
 // DeleteSimpleDBDomain deletes an existing SimpleDB domain.
-func DeleteSimpleDBDomain(domainName string) error {
+func DeleteSimpleDBDomain(domainName, region string) error {
 	var domainExists bool
-	svc := simpledb.New(sessionWithTimeout(10 * time.Second))
+	svc := simpledb.New(newSession(region))
 	err := svc.ListDomainsPages(nil, func(out *simpledb.ListDomainsOutput, last bool) bool {
 		for _, n := range out.DomainNames {
 			if aws.StringValue(n) == domainName {
@@ -71,6 +71,10 @@ func DeleteSimpleDBDomain(domainName string) error {
 	return err
 }
 
-func sessionWithTimeout(timeout time.Duration) *session.Session {
-	return session.New(aws.NewConfig().WithHTTPClient(&http.Client{Timeout: timeout}))
+func newSession(region string) *session.Session {
+	return session.Must(session.NewSession(&aws.Config{
+		Region:     aws.String(region),
+		HTTPClient: &http.Client{Timeout: 10 * time.Second},
+	}))
+
 }
