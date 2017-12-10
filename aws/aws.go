@@ -62,13 +62,16 @@ func DeleteSimpleDBDomain(domainName, region string) error {
 		}
 		return !last
 	})
+	if err != nil {
+		return err
+	}
 	if !domainExists {
 		return fmt.Errorf("SimpleDB domain %q does not exist", domainName)
 	}
-	_, err = svc.DeleteDomain(&simpledb.DeleteDomainInput{
+	_, err1 := svc.DeleteDomain(&simpledb.DeleteDomainInput{
 		DomainName: aws.String(domainName),
 	})
-	return err
+	return err1
 }
 
 func newSession(region string) *session.Session {
@@ -76,5 +79,4 @@ func newSession(region string) *session.Session {
 		Region:     aws.String(region),
 		HTTPClient: &http.Client{Timeout: 10 * time.Second},
 	}))
-
 }
