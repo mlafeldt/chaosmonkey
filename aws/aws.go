@@ -5,12 +5,15 @@ package aws
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/aws/aws-sdk-go/service/simpledb"
+	"github.com/aws/aws-sdk-go/service/sts"
 )
 
 // AutoScalingGroup describes an AWS auto scaling group.
@@ -75,8 +78,37 @@ func DeleteSimpleDBDomain(domainName, region string) error {
 }
 
 func newSession(region string) *session.Session {
-	return session.Must(session.NewSession(&aws.Config{
+	config := &aws.Config{
 		Region:     aws.String(region),
 		HTTPClient: &http.Client{Timeout: 10 * time.Second},
-	}))
+	}
+
+	if role := os.Getenv("AWS_ROLE"); role != "" {
+		if err := assumeRole(role, config); err != nil {
+			panic(err)
+		}
+	}
+
+	return session.Must(session.NewSession(config))
+}
+
+func assumeRole(role string, config *aws.Config) error {
+	svc := sts.New(session.New(config))
+	params := &sts.AssumeRoleInput{
+		RoleArn:         aws.String(role),
+		RoleSessionName: aws.String("chaosmonkey"),
+		DurationSeconds: aws.Int64(900),
+	}
+	out, err := svc.AssumeRole(params)
+	if err != nil {
+		return err
+	}
+
+	config.Credentials = credentials.NewStaticCredentials(
+		aws.StringValue(out.Credentials.AccessKeyId),
+		aws.StringValue(out.Credentials.SecretAccessKey),
+		aws.StringValue(out.Credentials.SessionToken),
+	)
+
+	return nil
 }
