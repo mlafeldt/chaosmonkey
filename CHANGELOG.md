@@ -1,3 +1,10 @@
+## v0.5.3 (2018-03-27)
+
+* cli: Allow to set AWS region on the command line.
+* lib: Extend API to set AWS region per request.
+* lib: Fix error handling for deleting SimpleDB domain.
+* Build project with Go 1.10.
+
 ## v0.5.2 (2017-10-08)
 
 * lib: Expose `APIPath`, `APIRequest`, `APIResponse`, and `ToEvent`.
