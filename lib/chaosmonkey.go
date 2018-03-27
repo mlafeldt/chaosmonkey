@@ -50,7 +50,7 @@ type APIRequest struct {
 	EventType string `json:"eventType"`
 	GroupName string `json:"groupName"`
 	GroupType string `json:"groupType"`
-	Region    string `json:"region,omitempty"` // Ignored by Chaos Monkey
+	Region    string `json:"region,omitempty"` // Ignored by vanilla Chaos Monkey
 }
 
 // APIResponse describes a response returned by the API.
@@ -99,7 +99,7 @@ type Config struct {
 	// Address and port of the Chaos Monkey API server
 	Endpoint string
 
-	// Optional AWS region (ignored by Chaos Monkey)
+	// Optional AWS region (ignored by vanilla Chaos Monkey)
 	Region string
 
 	// Optional username for HTTP Basic Authentication

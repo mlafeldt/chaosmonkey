@@ -18,7 +18,7 @@ import (
 func main() {
 	var (
 		endpoint = flag.String("endpoint", "", "Address and port of Chaos Monkey API server")
-		region   = flag.String("region", "", "Name of AWS region (ignored by Chaos Monkey)")
+		region   = flag.String("region", "", "Name of AWS region (ignored by vanilla Chaos Monkey)")
 		username = flag.String("username", "", "Username for HTTP basic authentication")
 		password = flag.String("password", "", "Password for HTTP basic authentication")
 
