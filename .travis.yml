@@ -4,7 +4,7 @@ sudo: false
 
 go: "1.10"
 
-install: make deps
+install: make install-deps
 
 script:
   - make build
