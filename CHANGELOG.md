@@ -1,3 +1,7 @@
+## v0.5.4 (2018-03-28)
+
+* Automatically assume the IAM role specified by the `AWS_ROLE` environment variable.
+
 ## v0.5.3 (2018-03-27)
 
 * cli: Allow to set AWS region on the command line.
