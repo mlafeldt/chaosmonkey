@@ -6,9 +6,10 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"reflect"
 	"testing"
 	"time"
+
+	"github.com/google/go-cmp/cmp"
 
 	chaosmonkey "github.com/mlafeldt/chaosmonkey/lib"
 )
@@ -93,8 +94,8 @@ func TestTriggerEvent(t *testing.T) {
 		TriggeredAt:          time.Unix(1460116927, 0).UTC(),
 	}
 
-	if !reflect.DeepEqual(event, expected) {
-		t.Fatalf("\ngot:  %+v\nwant: %+v\n", event, expected)
+	if diff := cmp.Diff(expected, event); diff != "" {
+		t.Fatal(diff)
 	}
 }
 
@@ -121,7 +122,7 @@ func TestEvents(t *testing.T) {
 		},
 	}
 
-	if !reflect.DeepEqual(events, expected) {
-		t.Fatalf("\ngot:  %+v\nwant: %+v\n", events, expected)
+	if diff := cmp.Diff(expected, events); diff != "" {
+		t.Fatal(diff)
 	}
 }
