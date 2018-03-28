@@ -16,6 +16,16 @@ import (
 	"github.com/aws/aws-sdk-go/service/sts"
 )
 
+// Client is a client to the AWS API.
+type Client struct {
+	Region string
+}
+
+// NewClient returns a new Client.
+func NewClient(region string) *Client {
+	return &Client{Region: region}
+}
+
 // AutoScalingGroup describes an AWS auto scaling group.
 type AutoScalingGroup struct {
 	Name               string
@@ -26,10 +36,15 @@ type AutoScalingGroup struct {
 }
 
 // AutoScalingGroups returns a list of all auto scaling groups.
-func AutoScalingGroups(region string) ([]AutoScalingGroup, error) {
+func (c *Client) AutoScalingGroups() ([]AutoScalingGroup, error) {
+	sess, err := c.newSession()
+	if err != nil {
+		return nil, err
+	}
+	svc := autoscaling.New(sess)
+
 	var groups []AutoScalingGroup
-	svc := autoscaling.New(newSession(region))
-	err := svc.DescribeAutoScalingGroupsPages(nil, func(out *autoscaling.DescribeAutoScalingGroupsOutput, last bool) bool {
+	err = svc.DescribeAutoScalingGroupsPages(nil, func(out *autoscaling.DescribeAutoScalingGroupsOutput, last bool) bool {
 		for _, g := range out.AutoScalingGroups {
 			inService := 0
 			for _, i := range g.Instances {
@@ -54,10 +69,15 @@ func AutoScalingGroups(region string) ([]AutoScalingGroup, error) {
 }
 
 // DeleteSimpleDBDomain deletes an existing SimpleDB domain.
-func DeleteSimpleDBDomain(domainName, region string) error {
+func (c *Client) DeleteSimpleDBDomain(domainName string) error {
+	sess, err := c.newSession()
+	if err != nil {
+		return err
+	}
+	svc := simpledb.New(sess)
+
 	var domainExists bool
-	svc := simpledb.New(newSession(region))
-	err := svc.ListDomainsPages(nil, func(out *simpledb.ListDomainsOutput, last bool) bool {
+	err = svc.ListDomainsPages(nil, func(out *simpledb.ListDomainsOutput, last bool) bool {
 		for _, n := range out.DomainNames {
 			if aws.StringValue(n) == domainName {
 				domainExists = true
@@ -77,19 +97,19 @@ func DeleteSimpleDBDomain(domainName, region string) error {
 	return err1
 }
 
-func newSession(region string) *session.Session {
+func (c *Client) newSession() (*session.Session, error) {
 	config := &aws.Config{
-		Region:     aws.String(region),
+		Region:     aws.String(c.Region),
 		HTTPClient: &http.Client{Timeout: 10 * time.Second},
 	}
 
 	if role := os.Getenv("AWS_ROLE"); role != "" {
 		if err := assumeRole(role, config); err != nil {
-			panic(err)
+			return nil, err
 		}
 	}
 
-	return session.Must(session.NewSession(config))
+	return session.NewSession(config)
 }
 
 func assumeRole(role string, config *aws.Config) error {

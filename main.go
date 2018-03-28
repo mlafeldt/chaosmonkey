@@ -47,12 +47,14 @@ func main() {
 		}
 		return
 	case *listGroups:
-		if err := listAutoScalingGroups(*region); err != nil {
-			abort("failed to list auto scaling groups: %s", err)
+		groups, err := aws.NewClient(*region).AutoScalingGroups()
+		if err != nil {
+			abort("failed to get auto scaling groups: %s", err)
 		}
+		listAutoScalingGroups(groups)
 		return
 	case *wipeState != "":
-		if err := aws.DeleteSimpleDBDomain(*wipeState, *region); err != nil {
+		if err := aws.NewClient(*region).DeleteSimpleDBDomain(*wipeState); err != nil {
 			abort("failed to wipe state: %s", err)
 		}
 		return
@@ -103,11 +105,7 @@ func main() {
 	}
 }
 
-func listAutoScalingGroups(region string) error {
-	groups, err := aws.AutoScalingGroups(region)
-	if err != nil {
-		return err
-	}
+func listAutoScalingGroups(groups []aws.AutoScalingGroup) {
 	lines := []string{"AutoScalingGroupName|Instances|Desired|Min|Max"}
 	for _, g := range groups {
 		lines = append(lines, fmt.Sprintf("%s|%d|%d|%d|%d",
@@ -119,7 +117,6 @@ func listAutoScalingGroups(region string) error {
 		))
 	}
 	fmt.Println(columnize.SimpleFormat(lines))
-	return nil
 }
 
 var addHeader = true
