@@ -63,6 +63,7 @@ type APIResponse struct {
 	GroupType  string `json:"groupType"`
 	MonkeyType string `json:"monkeyType"`
 	Region     string `json:"region"`
+	Message    string `json:"message,omitempty"`
 }
 
 // ToEvent converts the APIResponse into an Event.
@@ -241,11 +242,10 @@ func (c *Client) sendRequest(method, url string, body io.Reader, out interface{}
 }
 
 func decodeError(resp *http.Response) error {
-	var m struct {
-		Message string `json:"message"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&m); err == nil && m.Message != "" {
-		return fmt.Errorf("%s", m.Message)
+	var r APIResponse
+	err := json.NewDecoder(resp.Body).Decode(&r)
+	if err == nil && r.Message != "" {
+		return fmt.Errorf("%s", r.Message)
 	}
 	return fmt.Errorf("HTTP error: %s", resp.Status)
 }
