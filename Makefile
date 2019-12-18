@@ -9,7 +9,7 @@ lint:
 
 install-deps:
 	go get -d -t ./...
-	go get github.com/golang/lint/golint
+	go get golang.org/x/lint/golint
 
 build: test lint clean
 	GOOS=darwin GOARCH=amd64 go build -o build/chaosmonkey_darwin_amd64
