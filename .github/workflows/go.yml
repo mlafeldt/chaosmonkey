@@ -24,3 +24,5 @@ jobs:
       run: |
         make build
         ./build/chaosmonkey_linux_amd64 --version
+      env:
+        PATH: "$GOPATH/bin:$PATH"
