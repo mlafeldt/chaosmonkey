@@ -1,0 +1,29 @@
+name: Go
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  run:
+    name: Run
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+
+      - name: Get sources
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: make install-deps
+
+      - name: Test & build everything
+        run: |
+          export PATH=$PATH:$(go env GOPATH)/bin
+          make build
+
+      - name: Show version
+        run: ./build/chaosmonkey_linux_amd64 --version

@@ -1,6 +1,6 @@
 # chaosmonkey
 
-[![Build Status](https://travis-ci.org/mlafeldt/chaosmonkey.svg?branch=master)](https://travis-ci.org/mlafeldt/chaosmonkey)
+[![CI](https://github.com/mlafeldt/chaosmonkey/workflows/Go/badge.svg)](https://github.com/mlafeldt/chaosmonkey/actions)
 [![GoDoc](https://godoc.org/github.com/mlafeldt/chaosmonkey/lib?status.svg)](https://godoc.org/github.com/mlafeldt/chaosmonkey/lib)
 
 Go client to the [Chaos Monkey REST API](https://github.com/Netflix/SimianArmy/wiki/REST) that can be used to trigger and retrieve chaos events.
